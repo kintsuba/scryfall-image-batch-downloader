@@ -13,7 +13,7 @@
     "@windicss/plugin-animations": "^1.0.9",
     "got": "^11.8.2",
     "nuxt": "^3.0.0-rc.13",
-    "nuxt-windicss": "^2.5.3",
+    "nuxt-windicss": "^2.6.0",
     "scryfall-sdk": "^3.2.1",
     "unplugin-icons": "^0.14.12"
   },
