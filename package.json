@@ -8,7 +8,7 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
-    "@iconify/json": "^2.1.129",
+    "@iconify/json": "^2.2.5",
     "@types/got": "^9.6.12",
     "@windicss/plugin-animations": "^1.0.9",
     "got": "^11.8.2",
