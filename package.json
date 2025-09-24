@@ -8,14 +8,14 @@
     "preview": "nuxt preview"
   },
   "devDependencies": {
-    "@iconify-json/material-symbols": "^1.2.1",
-    "@iconify-json/mdi": "^1.2.0",
+    "@iconify-json/material-symbols": "^1.2.38",
+    "@iconify-json/mdi": "^1.2.3",
     "@nuxt/ui": "^2.9.0",
     "@types/got": "^9.6.12",
     "@windicss/plugin-animations": "^1.0.9",
-    "got": "^14.4.2",
+    "got": "^14.4.9",
     "nuxt": "^3.13.2",
-    "scryfall-sdk": "^5.0.2",
+    "scryfall-sdk": "^5.0.3",
     "tailwindcss-animate": "^1.0.7"
   },
   "resolutions": {
@@ -23,6 +23,6 @@
     "json5": "^2.2.2"
   },
   "dependencies": {
-    "sharp": "^0.33.5"
+    "sharp": "^0.34.4"
   }
 }
