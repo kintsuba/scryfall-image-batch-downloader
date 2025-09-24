@@ -14,7 +14,7 @@
         @close="isDisplayLoadingAlert = false"
         :close-button="{
           icon: 'i-material-symbols-close-rounded',
-          color: 'gray',
+          color: 'neutral',
           variant: 'link',
           size: '2xs',
         }"
@@ -25,12 +25,12 @@
         "
         :title="`Loading Complete: ${cards.length}`"
         icon="i-material-symbols-done-rounded"
-        color="green"
+        color="success"
         key="isSuccess"
         @close="isDisplayCompleteAlert = false"
         :close-button="{
           icon: 'i-material-symbols-close-rounded',
-          color: 'gray',
+          color: 'neutral',
           variant: 'link',
           size: '2xs',
         }"
@@ -41,14 +41,14 @@
           cards.length !== 0 &&
           errorCardNames.length !== 0
         "
-        title="以下のファイルがダウンロードできませんでした。"
+        title="The following file(s) could not be downloaded."
         icon="i-material-symbols-feedback-rounded"
-        color="red"
+        color="error"
         key="isNotDownloaded"
         @close="isDisplayErrorAlert = false"
         :close-button="{
           icon: 'i-material-symbols-close-rounded',
-          color: 'gray',
+          color: 'neutral',
           variant: 'link',
           size: '2xs',
         }"
@@ -61,14 +61,14 @@
       </UAlert>
       <UAlert
         v-if="isDisplayDoubleFaceAlert && doubleFacedCards.length > 0"
-        title="両面カードが存在します。"
+        title="Double-Faced Card(s) exist."
         icon="i-material-symbols-feedback-rounded"
-        color="yellow"
+        color="warning"
         key="doubleFacedCardExists"
         @close="isDisplayDoubleFaceAlert = false"
         :close-button="{
           icon: 'i-material-symbols-close-rounded',
-          color: 'gray',
+          color: 'neutral',
           variant: 'link',
           size: '2xs',
         }"
