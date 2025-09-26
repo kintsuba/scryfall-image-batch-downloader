@@ -5,45 +5,100 @@
     >
       <UTextarea
         v-model="cardsStringRef"
-        variant="outline"
         size="xl"
-        :rows="10"
-        resize
+        :rows="12"
         placeholder="1 Kenrith, the Returned King
 1 Archivist of Oghma
 1 Avacyn's Pilgrim
 1 Biomancer's Familiar
 ..."
       />
-      <UButton
-        icon="i-material-symbols-image-search-rounded"
-        size="xl"
-        color="primary"
-        variant="solid"
-        label="Search"
-        :trailing="false"
-        :disabled="!canStart"
-        @click="toSelect"
-      />
+
+      <div class="flex gap-4">
+        <USelect
+          v-model="selectedLanguageModel"
+          size="xl"
+          :items="languageOptions"
+          icon="i-material-symbols-language"
+          value-key="value"
+          label-key="label"
+        />
+
+        <UButton
+          icon="i-material-symbols-image-search-rounded"
+          size="xl"
+          color="primary"
+          variant="solid"
+          label="Search"
+          :trailing="false"
+          :disabled="!canStart"
+          @click="toSelect"
+        />
+      </div>
     </section>
   </main>
 </template>
 
 <script setup lang="ts">
 import type * as Scry from 'scryfall-sdk'
+import {
+  DEFAULT_LANGUAGE,
+  LANGUAGE_OPTIONS,
+  SUPPORTED_LANGUAGE_CODES,
+} from '~/constants/languages'
+import type { SupportedLanguageCode } from '~/constants/languages'
 
 const { cards, updateCardNames } = useCards()
+const {
+  selectedLanguage,
+  selectedLanguageInitialized,
+  setSelectedLanguage,
+} = useLanguage()
+
+const languageOptions = [...LANGUAGE_OPTIONS]
+const supportedLanguageCodes = SUPPORTED_LANGUAGE_CODES
 
 onMounted(() => {
   if (cards && cards.value.length !== 0) {
     const names = (cards.value as Scry.Card[]).map(c => c.name)
     cardsStringRef.value = '1 ' + names.join('\n1 ')
   }
+
+  if (!selectedLanguageInitialized.value) {
+    const navigatorLanguages = window.navigator.languages?.length
+      ? window.navigator.languages
+      : [window.navigator.language]
+
+    const normalizedNavigatorLanguages = navigatorLanguages
+      .map(language => language?.split?.('-')?.[0])
+      .filter((language): language is string => Boolean(language))
+
+    const matchedLanguage = normalizedNavigatorLanguages.find((language) => {
+      return supportedLanguageCodes.includes(
+        language as SupportedLanguageCode,
+      )
+    })
+
+    const fallbackLanguage = matchedLanguage
+      ? (matchedLanguage as SupportedLanguageCode)
+      : DEFAULT_LANGUAGE
+
+    setSelectedLanguage(fallbackLanguage)
+  }
 })
 
 const cardsStringRef = ref<string>(
   '1 Kenrith, the Returned King\n1 Archivist of Oghma',
 )
+
+const selectedLanguageModel = computed<SupportedLanguageCode>({
+  get: () => selectedLanguage.value,
+  set: (value) => {
+    if (supportedLanguageCodes.includes(value)) {
+      setSelectedLanguage(value)
+    }
+  },
+})
 
 const cardNamesRef = computed(() => {
   if (cardsStringRef.value === '') return []

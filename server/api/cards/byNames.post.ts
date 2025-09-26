@@ -1,11 +1,21 @@
 import * as Scry from 'scryfall-sdk'
+import {
+  DEFAULT_LANGUAGE,
+  isSupportedLanguageCode,
+} from '~/constants/languages'
+import type { SupportedLanguageCode } from '~/constants/languages'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const cardNames = body.cardNames as string[]
+  const bodyLanguage = (body.language as string | undefined)?.toLowerCase()
+  const requestedLanguage: SupportedLanguageCode
+    = isSupportedLanguageCode(bodyLanguage)
+      ? bodyLanguage
+      : DEFAULT_LANGUAGE
 
   const cards: Scry.Card[] = []
-  const jaCards: Scry.Card[] = []
+  const localizedCards: Scry.Card[] = []
   const errorCardNames: string[] = []
 
   Scry.setAgent('Scryfall Image Batch Downloader', '1.0.0')
@@ -19,34 +29,37 @@ export default defineEventHandler(async (event) => {
       cards.push(card)
       console.log(`Fetched: ${name}`)
     }
-    catch (e) {
+    catch {
       errorCardNames.push(name)
       console.error(`Failed: ${name}`)
     }
   }
 
   for (const card of cards) {
-    console.log(`Search Japnese Card with: ${card.name}`)
+    console.log(`Search ${requestedLanguage} card with: ${card.name}`)
 
-    let jaCard: Scry.Card
+    if (requestedLanguage === 'en') {
+      localizedCards.push(card)
+      continue
+    }
 
     try {
-      jaCard = await Scry.Cards.bySet(
+      const localizedCard = await Scry.Cards.bySet(
         card.set,
         parseInt(card.collector_number),
-        'ja',
+        requestedLanguage,
       )
 
-      if (!jaCard.image_uris) throw new Error()
+      if (!localizedCard.image_uris) throw new Error()
 
-      jaCards.push(jaCard)
-      console.log(`Found: ${jaCard.name}`)
+      localizedCards.push(localizedCard)
+      console.log(`Found: ${localizedCard.name}`)
     }
-    catch (e) {
-      jaCards.push(card)
+    catch {
+      localizedCards.push(card)
       console.log(`Not Found: ${card.name}`)
     }
   }
 
-  return { cards: jaCards, errorCardNames: errorCardNames }
+  return { cards: localizedCards, errorCardNames: errorCardNames }
 })

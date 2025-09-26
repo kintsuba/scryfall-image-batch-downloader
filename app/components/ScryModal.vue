@@ -25,11 +25,12 @@
           class="flex flex-col md:flex-row md:justify-between items-center gap-3 p-6 space-x-2 rounded-b border-t border-neutral-200 dark:border-neutral-600"
         >
           <UButton
+            v-if="selectedLanguage !== 'en'"
             size="md"
             icon="i-material-symbols-language"
             @click="changeLang"
           >
-            EN<UIcon name="i-material-symbols-swap-horiz-rounded" />JP
+            {{ englishLabel }} <UIcon name="i-material-symbols-swap-horiz-rounded" /> {{ selectedLanguageLabel }}
           </UButton>
           <div class="flex items-center gap-2">
             <UButton
@@ -55,12 +56,20 @@
 
 <script setup lang="ts">
 import type * as Scry from 'scryfall-sdk'
+import { findLanguageLabel } from '~/constants/languages'
+import type { SupportedLanguageCode } from '~/constants/languages'
 
 const CardSuggestion = resolveComponent('modal/CardSuggestion')
 
 const { selectedCard, selectCard, updateCardsWithSelectedCard } = useCards()
+const { selectedLanguage } = useLanguage()
 
-const usingLangRef = ref<string>('ja')
+const englishLabel = findLanguageLabel('en')
+const selectedLanguageLabel = computed(() =>
+  findLanguageLabel(selectedLanguage.value),
+)
+
+const usingLangRef = ref<SupportedLanguageCode>(selectedLanguage.value)
 
 const props = defineProps<{
   modelValue: boolean
@@ -80,12 +89,10 @@ const isDisplayRef = computed({
 })
 
 const changeLang = () => {
-  if (usingLangRef.value === 'ja') {
-    usingLangRef.value = 'en'
-  }
-  else {
-    usingLangRef.value = 'ja'
-  }
+  usingLangRef.value
+    = usingLangRef.value === 'en'
+      ? selectedLanguage.value
+      : 'en'
 }
 
 const changeCard = () => {
@@ -96,6 +103,22 @@ const changeCard = () => {
 const unset = () => {
   isDisplayRef.value = false
 }
+
+watch(
+  () => props.modelValue,
+  (isOpen) => {
+    if (isOpen) {
+      usingLangRef.value = selectedLanguage.value
+    }
+  },
+)
+
+watch(
+  () => selectedLanguage.value,
+  (language) => {
+    usingLangRef.value = language
+  },
+)
 
 const getImageUris = (card: Scry.Card) => {
   if (card.card_faces.length >= 2 && card.card_faces[0]?.image_uris) {
