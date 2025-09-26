@@ -30,43 +30,44 @@
 </template>
 
 <script setup lang="ts">
-import type * as Scry from "scryfall-sdk";
+import type * as Scry from 'scryfall-sdk'
 
-const { cards, updateCardNames } = useCards();
+const { cards, updateCardNames } = useCards()
 
 onMounted(() => {
   if (cards && cards.value.length !== 0) {
-    const names = (cards.value as Scry.Card[]).map((c) => c.name);
-    cardsStringRef.value = "1 " + names.join("\n1 ");
+    const names = (cards.value as Scry.Card[]).map(c => c.name)
+    cardsStringRef.value = '1 ' + names.join('\n1 ')
   }
-});
+})
 
 const cardsStringRef = ref<string>(
-  "1 Kenrith, the Returned King\n1 Archivist of Oghma"
-);
+  '1 Kenrith, the Returned King\n1 Archivist of Oghma',
+)
 
 const cardNamesRef = computed(() => {
-  if (cardsStringRef.value === "") return [];
-  const tempArray = cardsStringRef.value.split("\n");
+  if (cardsStringRef.value === '') return []
+  const tempArray = cardsStringRef.value.split('\n')
 
-  if (tempArray.every((t) => /\d+ (.*)/.test(t))) {
+  if (tempArray.every(t => /\d+ (.*)/.test(t))) {
     return tempArray.map((t) => {
-      const matchedNames = t.match(/\d+ (.*)/);
-      return matchedNames ? matchedNames[1] : "";
-    }) as string[];
-  } else {
-    return [];
+      const matchedNames = t.match(/\d+ (.*)/)
+      return matchedNames ? matchedNames[1] : ''
+    }) as string[]
   }
-});
+  else {
+    return []
+  }
+})
 
 const canStart = computed(() => {
-  return cardNamesRef.value.length !== 0;
-});
+  return cardNamesRef.value.length !== 0
+})
 
 const toSelect = async () => {
-  const router = useRouter();
+  const router = useRouter()
 
-  updateCardNames(cardNamesRef.value);
-  router.push("/select");
-};
+  updateCardNames(cardNamesRef.value)
+  router.push('/select')
+}
 </script>

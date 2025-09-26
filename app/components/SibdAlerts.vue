@@ -37,9 +37,9 @@
       />
       <UAlert
         v-if="
-          isDisplayErrorAlert &&
-          cards.length !== 0 &&
-          errorCardNames.length !== 0
+          isDisplayErrorAlert
+            && cards.length !== 0
+            && errorCardNames.length !== 0
         "
         key="isNotDownloaded"
         title="The following file(s) could not be downloaded."
@@ -54,7 +54,11 @@
         @close="isDisplayErrorAlert = false"
       >
         <template #description>
-          <ul v-for="name in errorCardNames" :key="name" class="list-disc">
+          <ul
+            v-for="name in errorCardNames"
+            :key="name"
+            class="list-disc"
+          >
             <li>{{ name }}</li>
           </ul>
         </template>
@@ -74,14 +78,17 @@
         @close="isDisplayDoubleFaceAlert = false"
       >
         <template #description>
-          <ul v-for="card in doubleFacedCards" :key="card.id" class="list-disc">
+          <ul
+            v-for="card in doubleFacedCards"
+            :key="card.id"
+            class="list-disc"
+          >
             <li>
               <a
                 :href="card.scryfall_uri"
                 target="_blank"
                 class="link:text-pink-400"
-                >{{ card.name }}</a
-              >
+              >{{ card.name }}</a>
             </li>
           </ul>
         </template>
@@ -89,24 +96,25 @@
     </transition-group>
   </UContainer>
 </template>
+
 <script setup lang="ts">
-const { cards, cardNames } = useCards();
+const { cards, cardNames } = useCards()
 
 const props = defineProps<{
-  isLoading: boolean;
-  errorCardNames: string[];
-}>();
+  isLoading: boolean
+  errorCardNames: string[]
+}>()
 
-const isDisplayLoadingAlert = ref<boolean>(true);
-const isDisplayCompleteAlert = ref<boolean>(true);
-const isDisplayErrorAlert = ref<boolean>(true);
-const isDisplayDoubleFaceAlert = ref<boolean>(true);
+const isDisplayLoadingAlert = ref<boolean>(true)
+const isDisplayCompleteAlert = ref<boolean>(true)
+const isDisplayErrorAlert = ref<boolean>(true)
+const isDisplayDoubleFaceAlert = ref<boolean>(true)
 
 const doubleFacedCards = computed(() => {
-  if (cards.value.length === 0) return [];
+  if (cards.value.length === 0) return []
 
   return cards.value.filter(
-    (c) => c.card_faces.length >= 2 && c.card_faces[0]?.image_uris
-  );
-});
+    c => c.card_faces.length >= 2 && c.card_faces[0]?.image_uris,
+  )
+})
 </script>

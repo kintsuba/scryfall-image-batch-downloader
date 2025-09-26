@@ -13,15 +13,16 @@
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
-import type * as Scry from "scryfall-sdk";
+import type * as Scry from 'scryfall-sdk'
 
 const props = defineProps<{
-  cards: Scry.Card[];
-  selectedCard: Scry.Card | undefined;
-}>();
+  cards: Scry.Card[]
+  selectedCard: Scry.Card | undefined
+}>()
 
 const emit = defineEmits<{
-  (e: "selectCard", card: Scry.Card): void;
-}>();
+  (e: 'selectCard', card: Scry.Card): void
+}>()
 </script>

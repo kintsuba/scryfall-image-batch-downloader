@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss'
 
 export default {
   content: [],
@@ -6,30 +6,30 @@ export default {
     extend: {
       fontFamily: {
         sans: [
-          "Segoe UI",
-          "Meiryo",
-          "system-ui",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "sans-serif",
+          'Segoe UI',
+          'Meiryo',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'sans-serif',
         ],
         display: [
-          "Segoe UI",
-          "Meiryo",
-          "system-ui",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "sans-serif",
+          'Segoe UI',
+          'Meiryo',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'sans-serif',
         ],
         body: [
-          "Segoe UI",
-          "Meiryo",
-          "system-ui",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "sans-serif",
+          'Segoe UI',
+          'Meiryo',
+          'system-ui',
+          '-apple-system',
+          'BlinkMacSystemFont',
+          'sans-serif',
         ],
       },
     },
   },
-} satisfies Config;
+} satisfies Config

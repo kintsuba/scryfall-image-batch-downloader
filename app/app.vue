@@ -8,27 +8,27 @@
 </template>
 
 <script setup lang="ts">
-const SibdHeader = resolveComponent("SibdHeader");
+const SibdHeader = resolveComponent('SibdHeader')
 
-const title = computed(() => "Scryfall Image Batch Downloader");
+const title = computed(() => 'Scryfall Image Batch Downloader')
 const description = ref(
-  "Scryfallの画像を一括でダウンロードするためのサイトです。"
-);
+  'Scryfallの画像を一括でダウンロードするためのサイトです。',
+)
 
 useHead({
   title,
   htmlAttrs: {
-    lang: "ja",
-    prefix: "og: http://ogp.me/ns#",
+    lang: 'ja',
+    prefix: 'og: http://ogp.me/ns#',
   },
-});
+})
 
 useSeoMeta({
   title,
   description,
   ogTitle: title,
   ogDescription: description,
-  ogImage: "/ogp-icon.png",
-  twitterCard: "summary",
-});
+  ogImage: '/ogp-icon.png',
+  twitterCard: 'summary',
+})
 </script>
