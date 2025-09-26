@@ -5,18 +5,23 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview"
+    "preview": "nuxt preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
     "@iconify-json/material-symbols": "^1.2.38",
     "@iconify-json/mdi": "^1.2.3",
+    "@nuxt/eslint": "1.9.0",
     "@nuxt/ui": "^4.0.0",
     "@types/got": "^9.6.12",
     "@windicss/plugin-animations": "^1.0.9",
+    "eslint": "^9.36.0",
     "got": "^14.4.9",
     "nuxt": "^4.1.2",
     "scryfall-sdk": "^5.0.3",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.9.2"
   },
   "resolutions": {
     "loader-utils": "^2.0.4",
