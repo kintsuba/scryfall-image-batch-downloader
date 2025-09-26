@@ -14,7 +14,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import * as Scry from "scryfall-sdk";
+import type * as Scry from "scryfall-sdk";
 
 const props = defineProps<{
   cards: Scry.Card[];

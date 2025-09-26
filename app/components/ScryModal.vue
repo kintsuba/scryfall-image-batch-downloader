@@ -1,5 +1,5 @@
 <template>
-  <UModal :title="selectedCard?.name" v-model:open="isDisplayRef">
+  <UModal v-model:open="isDisplayRef" :title="selectedCard?.name">
     <template #body>
       <div class="relative bg-white rounded-lg shadow dark:bg-neutral-700">
         <div
@@ -10,30 +10,30 @@
             :src="getImageUris(selectedCard as Scry.Card)?.large"
             :title="selectedCard?.name"
             class="inline-block p-4 max-h-[400px]"
-          />
+          >
         </div>
         <CardSuggestion
           v-if="selectedCard"
-          @selectCard="selectCard"
-          :usingLangRef="usingLangRef"
+          :using-lang-ref="usingLangRef"
+          @select-card="selectCard"
         />
         <!-- Modal footer -->
         <div
           class="flex flex-col md:flex-row md:justify-between items-center gap-3 p-6 space-x-2 rounded-b border-t border-neutral-200 dark:border-neutral-600"
         >
           <UButton
-            @click="changeLang"
             size="md"
             icon="i-material-symbols-language"
+            @click="changeLang"
           >
             EN<UIcon name="i-material-symbols-swap-horiz-rounded" />JP
           </UButton>
           <div class="flex items-center gap-2">
-            <UButton @click="unset" size="md" variant="outline">Cancel</UButton>
+            <UButton size="md" variant="outline" @click="unset">Cancel</UButton>
             <UButton
-              @click="changeCard"
               size="md"
               icon="i-material-symbols-swap-vert-rounded"
+              @click="changeCard"
               >Change Image</UButton
             >
           </div>
@@ -43,7 +43,7 @@
   </UModal>
 </template>
 <script setup lang="ts">
-import * as Scry from "scryfall-sdk";
+import type * as Scry from "scryfall-sdk";
 
 const CardSuggestion = resolveComponent("modal/CardSuggestion");
 

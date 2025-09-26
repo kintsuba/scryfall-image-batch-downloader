@@ -3,14 +3,14 @@
     <CardList
       v-if="usingLangRef === 'ja' && !pendingJa"
       :cards="searchedCardsJa"
-      :selectedCard="selectedCard"
-      @selectCard="selectCard"
+      :selected-card="selectedCard"
+      @select-card="selectCard"
     />
     <CardList
       v-else-if="usingLangRef === 'en' && !pendingEn"
       :cards="searchedCardsEn"
-      :selectedCard="selectedCard"
-      @selectCard="selectCard"
+      :selected-card="selectedCard"
+      @select-card="selectCard"
     />
     <div v-else class="flex items-center justify-center h-60">
       <ScryLoading />
@@ -18,7 +18,7 @@
   </section>
 </template>
 <script setup lang="ts">
-import * as Scry from "scryfall-sdk";
+import type * as Scry from "scryfall-sdk";
 
 const CardList = resolveComponent("modal/CardList");
 

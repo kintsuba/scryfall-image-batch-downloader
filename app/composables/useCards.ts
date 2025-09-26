@@ -1,5 +1,5 @@
 import type { Ref } from "vue";
-import * as Scry from "scryfall-sdk";
+import type * as Scry from "scryfall-sdk";
 
 export const useCards = () => {
   const cards: Ref<Scry.Card[]> = useState("cards", () => []);

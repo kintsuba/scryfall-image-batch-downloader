@@ -8,32 +8,32 @@
     >
       <UAlert
         v-if="isDisplayLoadingAlert && isLoading"
+        key="isLoading"
         :title="`Now Loading: ${cards.length} / ${cardNames.length}`"
         icon="i-material-symbols-search-rounded"
-        key="isLoading"
-        @close="isDisplayLoadingAlert = false"
         :close-button="{
           icon: 'i-material-symbols-close-rounded',
           color: 'neutral',
           variant: 'link',
           size: '2xs',
         }"
+        @close="isDisplayLoadingAlert = false"
       />
       <UAlert
         v-if="
           isDisplayCompleteAlert && !isLoading && errorCardNames.length === 0
         "
+        key="isSuccess"
         :title="`Loading Complete: ${cards.length}`"
         icon="i-material-symbols-done-rounded"
         color="success"
-        key="isSuccess"
-        @close="isDisplayCompleteAlert = false"
         :close-button="{
           icon: 'i-material-symbols-close-rounded',
           color: 'neutral',
           variant: 'link',
           size: '2xs',
         }"
+        @close="isDisplayCompleteAlert = false"
       />
       <UAlert
         v-if="
@@ -41,40 +41,40 @@
           cards.length !== 0 &&
           errorCardNames.length !== 0
         "
+        key="isNotDownloaded"
         title="The following file(s) could not be downloaded."
         icon="i-material-symbols-feedback-rounded"
         color="error"
-        key="isNotDownloaded"
-        @close="isDisplayErrorAlert = false"
         :close-button="{
           icon: 'i-material-symbols-close-rounded',
           color: 'neutral',
           variant: 'link',
           size: '2xs',
         }"
+        @close="isDisplayErrorAlert = false"
       >
         <template #description>
-          <ul class="list-disc" v-for="name in errorCardNames" key="name">
+          <ul v-for="name in errorCardNames" :key="name" class="list-disc">
             <li>{{ name }}</li>
           </ul>
         </template>
       </UAlert>
       <UAlert
         v-if="isDisplayDoubleFaceAlert && doubleFacedCards.length > 0"
+        key="doubleFacedCardExists"
         title="Double-Faced Card(s) exist."
         icon="i-material-symbols-feedback-rounded"
         color="warning"
-        key="doubleFacedCardExists"
-        @close="isDisplayDoubleFaceAlert = false"
         :close-button="{
           icon: 'i-material-symbols-close-rounded',
           color: 'neutral',
           variant: 'link',
           size: '2xs',
         }"
+        @close="isDisplayDoubleFaceAlert = false"
       >
         <template #description>
-          <ul class="list-disc" v-for="card in doubleFacedCards">
+          <ul v-for="card in doubleFacedCards" :key="card.id" class="list-disc">
             <li>
               <a
                 :href="card.scryfall_uri"

@@ -1,6 +1,6 @@
 <template>
   <main>
-    <SibdAlerts :isLoading="isLoadingRef" :errorCardNames="errorCardNames" />
+    <SibdAlerts :is-loading="isLoadingRef" :error-card-names="errorCardNames" />
 
     <div
       v-if="cards.length !== 0"
@@ -19,11 +19,11 @@
     </div>
     <div v-if="cards.length !== 0" class="flex justify-center mt-8">
       <UButton
-        @click="download"
         class="fixed bottom-4 right-4"
         size="md"
         icon="i-material-symbols-download-rounded"
         :loading="isDownloadingRef"
+        @click="download"
       >
         <span class="font-bold">Download</span>
       </UButton>
@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import * as Scry from "scryfall-sdk";
+import type * as Scry from "scryfall-sdk";
 
 const ScryCard = resolveComponent("ScryCard");
 const ScryModal = resolveComponent("ScryModal");

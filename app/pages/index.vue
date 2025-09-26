@@ -16,7 +16,6 @@
 ..."
       />
       <UButton
-        @click="toSelect"
         icon="i-material-symbols-image-search-rounded"
         size="xl"
         color="primary"
@@ -24,13 +23,14 @@
         label="Search"
         :trailing="false"
         :disabled="!canStart"
+        @click="toSelect"
       />
     </section>
   </main>
 </template>
 
 <script setup lang="ts">
-import * as Scry from "scryfall-sdk";
+import type * as Scry from "scryfall-sdk";
 
 const { cards, updateCardNames } = useCards();
 

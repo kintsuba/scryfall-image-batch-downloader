@@ -5,9 +5,6 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const urls = body.urls as string[];
 
-  if (urls.length >= 69) {
-  }
-
   const images = await Promise.all(
     urls.map(async (url) => await got.get(url).buffer())
   );
