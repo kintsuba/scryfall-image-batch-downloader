@@ -30,6 +30,26 @@ export default defineEventHandler(async (event) => {
     return localizedCard
   }
   catch {
+    try {
+      const localizedCards = await Scry.Cards.search(
+        `oracleid:${card.oracle_id} lang:${requestedLanguage}`,
+        {
+          order: 'released',
+          unique: 'prints',
+        },
+      )
+        .cancelAfterPage()
+        .waitForAll()
+
+      const [firstLocalizedCard] = localizedCards
+      if (firstLocalizedCard) {
+        return firstLocalizedCard
+      }
+    }
+    catch {
+      return card
+    }
+
     return card
   }
 })
