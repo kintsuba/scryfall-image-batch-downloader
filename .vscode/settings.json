@@ -1,12 +1,7 @@
 {
-  "editor.quickSuggestions": {
-    "strings": true
+  "editor.formatOnSave": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
   },
-  "css.validate": false,
-  "files.associations": { "*.css": "tailwindcss" },
-  "tailwindCSS.experimental.classRegex": [
-    ["ui:\\s*{([^)]*)\\s*}", "[\"'`]([^\"'`]*).*?[\"'`]"],
-    ["/\\*ui\\*/\\s*{([^;]*)}", ":\\s*[\"'`]([^\"'`]*).*?[\"'`]"]
-  ],
-  "tailwindCSS.classAttributes": ["class", "className", "ngClass", "ui"]
+  "eslint.format.enable": true
 }

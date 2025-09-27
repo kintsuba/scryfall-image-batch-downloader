@@ -1,42 +1,48 @@
 <template>
   <section>
     <CardList
-      v-if="usingLangRef === 'ja' && !pendingJa"
-      :cards="searchedCardsJa"
-      :selectedCard="selectedCard"
-      @selectCard="selectCard"
+      v-if="usingLangRef === selectedLanguage && statusSelected !== 'pending'"
+      :cards="searchedCardsSelected"
+      :selected-card="selectedCard"
+      @select-card="selectCard"
     />
     <CardList
-      v-else-if="usingLangRef === 'en' && !pendingEn"
+      v-else-if="usingLangRef === 'en' && statusEn !== 'pending'"
       :cards="searchedCardsEn"
-      :selectedCard="selectedCard"
-      @selectCard="selectCard"
+      :selected-card="selectedCard"
+      @select-card="selectCard"
     />
-    <div v-else class="flex items-center justify-center h-60">
+    <div
+      v-else
+      class="flex items-center justify-center h-60"
+    >
       <ScryLoading />
     </div>
   </section>
 </template>
+
 <script setup lang="ts">
-import * as Scry from "scryfall-sdk";
+import type * as Scry from 'scryfall-sdk'
+import type { SupportedLanguageCode } from '~/constants/languages'
 
-const CardList = resolveComponent("modal/CardList");
+const CardList = resolveComponent('modal/CardList')
 
-const { selectedCard, selectCard } = useCards();
+const { selectedCard, selectCard } = useCards()
+const { selectedLanguage } = useLanguage()
 
-const { pending: pendingJa, data: searchedCardsJa } = await useLazyFetch(
-  `/api/cards/search/prints?id=${selectedCard.value?.oracle_id}&lang=ja`
-);
+const { status: statusSelected, data: searchedCardsSelected } = await useLazyFetch(
+  `/api/cards/search/prints?id=${selectedCard.value?.oracle_id}&lang=${selectedLanguage.value}`,
+)
 
-const { pending: pendingEn, data: searchedCardsEn } = await useLazyFetch(
-  `/api/cards/search/prints?id=${selectedCard.value?.oracle_id}&lang=en`
-);
+const { status: statusEn, data: searchedCardsEn } = await useLazyFetch(
+  `/api/cards/search/prints?id=${selectedCard.value?.oracle_id}&lang=en`,
+)
 
 const props = defineProps<{
-  usingLangRef: string;
-}>();
+  usingLangRef: SupportedLanguageCode
+}>()
 
 const emit = defineEmits<{
-  (e: "selectCard", card: Scry.Card): void;
-}>();
+  (e: 'selectCard', card: Scry.Card): void
+}>()
 </script>

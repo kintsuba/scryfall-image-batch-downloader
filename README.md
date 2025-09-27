@@ -22,15 +22,15 @@ For example, for a MoxFiled decklist, you can get the list in this format from [
 ### Develop
 
 ```shell
-yarn
-yarn dev -o # Adding -o will automatically open a tab in the browser.
+pnpm
+pnpm dev
 ```
 
 ### Production
 
 ```shell
-yarn
-yarn build
+pnpm
+pnpm build
 node .output/server/index.mjs
 ```
 

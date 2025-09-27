@@ -1,50 +1,65 @@
-import * as Scry from "scryfall-sdk";
+import * as Scry from 'scryfall-sdk'
+import {
+  DEFAULT_LANGUAGE,
+  isSupportedLanguageCode,
+} from '~/constants/languages'
+import type { SupportedLanguageCode } from '~/constants/languages'
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const cardNames = body.cardNames as string[];
+  const body = await readBody(event)
+  const cardNames = body.cardNames as string[]
+  const bodyLanguage = (body.language as string | undefined)?.toLowerCase()
+  const requestedLanguage: SupportedLanguageCode
+    = isSupportedLanguageCode(bodyLanguage)
+      ? bodyLanguage
+      : DEFAULT_LANGUAGE
 
-  const cards: Scry.Card[] = [];
-  const jaCards: Scry.Card[] = [];
-  const errorCardNames: string[] = [];
+  const cards: Scry.Card[] = []
+  const localizedCards: Scry.Card[] = []
+  const errorCardNames: string[] = []
 
-  Scry.setAgent("Scryfall Image Batch Downloader", "1.0.0");
+  Scry.setAgent('Scryfall Image Batch Downloader', '1.0.0')
 
   for (const name of cardNames) {
-    console.log(`Fetching: ${name}`);
+    console.log(`Fetching: ${name}`)
 
     try {
-      const card = await Scry.Cards.byName(name);
-      if (!card.image_uris) throw new Error();
-      cards.push(card);
-      console.log(`Fetched: ${name}`);
-    } catch (e) {
-      errorCardNames.push(name);
-      console.error(`Failed: ${name}`);
+      const card = await Scry.Cards.byName(name)
+      if (!card.image_uris) throw new Error()
+      cards.push(card)
+      console.log(`Fetched: ${name}`)
+    }
+    catch {
+      errorCardNames.push(name)
+      console.error(`Failed: ${name}`)
     }
   }
 
   for (const card of cards) {
-    console.log(`Search Japnese Card with: ${card.name}`);
+    console.log(`Search ${requestedLanguage} card with: ${card.name}`)
 
-    let jaCard: Scry.Card;
+    if (requestedLanguage === 'en') {
+      localizedCards.push(card)
+      continue
+    }
 
     try {
-      jaCard = await Scry.Cards.bySet(
+      const localizedCard = await Scry.Cards.bySet(
         card.set,
         parseInt(card.collector_number),
-        "ja"
-      );
+        requestedLanguage,
+      )
 
-      if (!jaCard.image_uris) throw new Error();
+      if (!localizedCard.image_uris) throw new Error()
 
-      jaCards.push(jaCard);
-      console.log(`Found: ${jaCard.name}`);
-    } catch (e) {
-      jaCards.push(card);
-      console.log(`Not Found: ${card.name}`);
+      localizedCards.push(localizedCard)
+      console.log(`Found: ${localizedCard.name}`)
+    }
+    catch {
+      localizedCards.push(card)
+      console.log(`Not Found: ${card.name}`)
     }
   }
 
-  return { cards: jaCards, errorCardNames: errorCardNames };
-});
+  return { cards: localizedCards, errorCardNames: errorCardNames }
+})

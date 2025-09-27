@@ -5,68 +5,121 @@
     >
       <UTextarea
         v-model="cardsStringRef"
-        variant="outline"
         size="xl"
-        :rows="10"
-        resize
+        :rows="12"
         placeholder="1 Kenrith, the Returned King
 1 Archivist of Oghma
 1 Avacyn's Pilgrim
 1 Biomancer's Familiar
 ..."
       />
-      <UButton
-        @click="toSelect"
-        icon="i-material-symbols-image-search-rounded"
-        size="xl"
-        color="primary"
-        variant="solid"
-        label="Search"
-        :trailing="false"
-        :disabled="!canStart"
-      />
+
+      <div class="flex gap-4">
+        <ULocaleSelect
+          v-model="selectedLanguageModel"
+          size="xl"
+          :locales="supportedLocales"
+        />
+
+        <UButton
+          icon="i-material-symbols-image-search-rounded"
+          size="xl"
+          color="primary"
+          variant="solid"
+          label="Search"
+          :trailing="false"
+          :disabled="!canStart"
+          @click="toSelect"
+        />
+      </div>
     </section>
   </main>
 </template>
 
 <script setup lang="ts">
-import * as Scry from "scryfall-sdk";
+import type * as Scry from 'scryfall-sdk'
+import {
+  DEFAULT_LANGUAGE,
+  SUPPORTED_LANGUAGE_CODES,
+  SUPPORTED_LOCALES,
+} from '~/constants/languages'
+import type { SupportedLanguageCode } from '~/constants/languages'
 
-const { cards, updateCardNames } = useCards();
+const { cards, updateCardNames } = useCards()
+const {
+  selectedLanguage,
+  selectedLanguageInitialized,
+  setSelectedLanguage,
+} = useLanguage()
+
+const supportedLocales = [...SUPPORTED_LOCALES]
+const supportedLanguageCodes = SUPPORTED_LANGUAGE_CODES
 
 onMounted(() => {
   if (cards && cards.value.length !== 0) {
-    const names = (cards.value as Scry.Card[]).map((c) => c.name);
-    cardsStringRef.value = "1 " + names.join("\n1 ");
+    const names = (cards.value as Scry.Card[]).map(c => c.name)
+    cardsStringRef.value = '1 ' + names.join('\n1 ')
   }
-});
+
+  if (!selectedLanguageInitialized.value) {
+    const navigatorLanguages = window.navigator.languages?.length
+      ? window.navigator.languages
+      : [window.navigator.language]
+
+    const normalizedNavigatorLanguages = navigatorLanguages
+      .map(language => language?.split?.('-')?.[0])
+      .filter((language): language is string => Boolean(language))
+
+    const matchedLanguage = normalizedNavigatorLanguages.find((language) => {
+      return supportedLanguageCodes.includes(
+        language as SupportedLanguageCode,
+      )
+    })
+
+    const fallbackLanguage = matchedLanguage
+      ? (matchedLanguage as SupportedLanguageCode)
+      : DEFAULT_LANGUAGE
+
+    setSelectedLanguage(fallbackLanguage)
+  }
+})
 
 const cardsStringRef = ref<string>(
-  "1 Kenrith, the Returned King\n1 Archivist of Oghma"
-);
+  '1 Kenrith, the Returned King\n1 Archivist of Oghma',
+)
+
+const selectedLanguageModel = computed<SupportedLanguageCode>({
+  get: () => selectedLanguage.value,
+  set: (value) => {
+    if (supportedLanguageCodes.includes(value)) {
+      setSelectedLanguage(value)
+    }
+  },
+})
 
 const cardNamesRef = computed(() => {
-  if (cardsStringRef.value === "") return [];
-  const tempArray = cardsStringRef.value.split("\n");
+  if (cardsStringRef.value === '') return []
+  const tempArray = cardsStringRef.value.split('\n')
 
-  if (tempArray.every((t) => /\d+ (.*)/.test(t))) {
+  if (tempArray.every(t => /\d+ (.*)/.test(t))) {
     return tempArray.map((t) => {
-      const matchedNames = t.match(/\d+ (.*)/);
-      return matchedNames ? matchedNames[1] : "";
-    }) as string[];
-  } else {
-    return [];
+      const matchedNames = t.match(/\d+ (.*)/)
+      return matchedNames ? matchedNames[1] : ''
+    }) as string[]
   }
-});
+  else {
+    return []
+  }
+})
 
 const canStart = computed(() => {
-  return cardNamesRef.value.length !== 0;
-});
+  return cardNamesRef.value.length !== 0
+})
 
 const toSelect = async () => {
-  const router = useRouter();
+  const router = useRouter()
 
-  updateCardNames(cardNamesRef.value);
-  router.push("/select");
-};
+  updateCardNames(cardNamesRef.value)
+  router.push('/select')
+}
 </script>
