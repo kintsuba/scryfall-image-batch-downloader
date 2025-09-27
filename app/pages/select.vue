@@ -47,7 +47,14 @@ const ScryModal = resolveComponent('ScryModal')
 
 const SibdAlerts = resolveComponent('SibdAlerts')
 
-const { cards, cardNames, addCard, updateCards, selectCard } = useCards()
+const {
+  cards,
+  cardNames,
+  addCard,
+  updateCards,
+  selectCard,
+} = useCards()
+const { selectedLanguage } = useLanguage()
 
 const errorCardNames = ref<string[]>([])
 const isDisplayModalRef = ref<boolean>(false)
@@ -59,7 +66,11 @@ onMounted(async () => {
   updateCards([])
   for (const name of cardNames.value) {
     try {
-      const card = await $fetch(`/api/cards/byName?name=${name}`)
+      const params = new URLSearchParams({
+        name,
+        lang: selectedLanguage.value,
+      })
+      const card = await $fetch(`/api/cards/byName?${params.toString()}`)
       addCard(card as Scry.Card)
     }
     catch (e) {
