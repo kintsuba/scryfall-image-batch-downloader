@@ -15,13 +15,10 @@
       />
 
       <div class="flex gap-4">
-        <USelect
+        <ULocaleSelect
           v-model="selectedLanguageModel"
           size="xl"
-          :items="languageOptions"
-          icon="i-material-symbols-language"
-          value-key="value"
-          label-key="label"
+          :locales="supportedLocales"
         />
 
         <UButton
@@ -43,8 +40,8 @@
 import type * as Scry from 'scryfall-sdk'
 import {
   DEFAULT_LANGUAGE,
-  LANGUAGE_OPTIONS,
   SUPPORTED_LANGUAGE_CODES,
+  SUPPORTED_LOCALES,
 } from '~/constants/languages'
 import type { SupportedLanguageCode } from '~/constants/languages'
 
@@ -55,7 +52,7 @@ const {
   setSelectedLanguage,
 } = useLanguage()
 
-const languageOptions = [...LANGUAGE_OPTIONS]
+const supportedLocales = [...SUPPORTED_LOCALES]
 const supportedLanguageCodes = SUPPORTED_LANGUAGE_CODES
 
 onMounted(() => {
