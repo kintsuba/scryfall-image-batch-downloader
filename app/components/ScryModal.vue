@@ -42,7 +42,7 @@
             </UButton>
             <UButton
               size="md"
-              icon="i-material-symbols-swap-vert-rounded"
+              icon="i-material-symbols-replace-image"
               @click="changeCard"
             >
               Change Image
