@@ -190,19 +190,36 @@ const ensureFileExtension = (name: string, extension: string) => {
     : `${name}${normalizedExtension}`
 }
 
-const readFileAsBase64 = (file: File) => {
+const getFileMimeType = (file: File) => {
+  if (file.type && file.type.length > 0) {
+    return file.type
+  }
+
+  const extension = file.name.split('.').pop()?.toLowerCase()
+  if (extension === 'jpg' || extension === 'jpeg') {
+    return 'image/jpeg'
+  }
+  if (extension === 'png') {
+    return 'image/png'
+  }
+
+  return 'application/octet-stream'
+}
+
+const readFileAsDataUrl = (file: File) => {
   return new Promise<string>((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => {
       const result = reader.result
       if (typeof result === 'string') {
-        const base64 = result.split(',')[1]
+        const [, base64] = result.split(',')
         if (base64) {
-          resolve(base64)
+          const mimeType = getFileMimeType(file)
+          resolve(`data:${mimeType};base64,${base64}`)
           return
         }
       }
-      reject(new Error('Failed to read file as base64 string'))
+      reject(new Error('Failed to read file as data URL'))
     }
     reader.onerror = () => {
       reject(reader.error ?? new Error('Unknown FileReader error'))
@@ -248,7 +265,7 @@ const downloadTtsImages = async () => {
 
   const hiddenImage = hiddenImageFileRef.value
   if (hiddenImage) {
-    payload.hiddenImage = await readFileAsBase64(hiddenImage)
+    payload.hiddenImage = await readFileAsDataUrl(hiddenImage)
   }
 
   const blob = await $fetch<Blob>('/api/downloadTtsImages', {

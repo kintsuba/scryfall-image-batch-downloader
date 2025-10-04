@@ -62,6 +62,10 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  if (hiddenImage) {
+    console.info('[downloadTtsImages] hiddenImage payload (base64):', hiddenImage)
+  }
+
   const payload = images.map((entry: { id?: string, imageUri: string }, index: number): MergePayloadItem => {
     const id = typeof entry.id === 'string' ? entry.id.trim() : ''
     const imageUri = entry.imageUri.trim()
