@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main :aria-busy="isDownloadingRef">
     <SibdAlerts
       :is-loading="isLoadingRef"
       :error-card-names="errorCardNames"
@@ -36,34 +36,10 @@
     </div>
 
     <ScryModal v-model="isDisplayModalRef" />
-    <UModal
-      v-model:open="isDownloadOptionsModalOpenRef"
-      title="Select a download option"
-    >
-      <template #body>
-        <div class="flex flex-col gap-4 py-2">
-          <UButton
-            icon="i-material-symbols-dashboard-rounded"
-            :loading="isDownloadingRef"
-            :disabled="isDownloadingRef"
-            size="lg"
-            @click="onDownloadTtsClick"
-          >
-            Download as TTS image sheets
-          </UButton>
-          <UButton
-            icon="i-material-symbols-archive-rounded"
-            variant="outline"
-            :loading="isDownloadingRef"
-            :disabled="isDownloadingRef"
-            size="lg"
-            @click="onDownloadZipClick"
-          >
-            Download as ZIP archive
-          </UButton>
-        </div>
-      </template>
-    </UModal>
+    <ScryDownloadModal
+      v-model="isDownloadOptionsModalOpenRef"
+      v-model:is-downloading="isDownloadingRef"
+    />
   </main>
 </template>
 
@@ -72,6 +48,7 @@ import type * as Scry from 'scryfall-sdk'
 
 const ScryCard = resolveComponent('ScryCard')
 const ScryModal = resolveComponent('ScryModal')
+const ScryDownloadModal = resolveComponent('ScryDownloadModal')
 
 const SibdAlerts = resolveComponent('SibdAlerts')
 
@@ -110,119 +87,8 @@ onMounted(async () => {
   isLoadingRef.value = false
 })
 
-const getImageUris = (card: Scry.Card) => {
-  if (card.card_faces.length >= 2 && card.card_faces[0]?.image_uris) {
-    return card.card_faces[0].image_uris
-  }
-  else if (card.image_uris) {
-    return card.image_uris
-  }
-}
-
 const openDownloadModal = () => {
   if (cards.value.length === 0) return
   isDownloadOptionsModalOpenRef.value = true
-}
-
-const triggerDownload = (file: Blob, fileName: string) => {
-  const url = window.URL.createObjectURL(file)
-  const link = document.createElement('a')
-  link.href = url
-  link.setAttribute('download', fileName)
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  window.URL.revokeObjectURL(url)
-}
-
-const sanitizeCardName = (name: string) => {
-  return name
-    .replace(/\\/g, '-')
-    .replace(/\//g, '-')
-    .replace(/[:*?"<>|]/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    || 'card'
-}
-
-const performDownload = async (task: () => Promise<void>) => {
-  if (isDownloadingRef.value) return
-  isDownloadOptionsModalOpenRef.value = false
-
-  if (cards.value.length === 0) return
-
-  isDownloadingRef.value = true
-  try {
-    await task()
-  }
-  catch (error) {
-    console.error(error)
-  }
-  finally {
-    isDownloadingRef.value = false
-  }
-}
-
-const downloadTtsImages = async () => {
-  const stackSize = 30
-  let chunkIndex = 0
-
-  for (let start = 0; start < cards.value.length; start += stackSize) {
-    const targetCards = cards.value.slice(start, start + stackSize)
-    const urls = targetCards
-      .map(card => getImageUris(card as Scry.Card)?.large)
-      .filter((url): url is string => Boolean(url))
-
-    if (urls.length === 0) continue
-
-    const blob = await $fetch<Blob>('/api/downloadImage', {
-      method: 'POST',
-      body: { urls },
-      timeout: 600000,
-      responseType: 'blob',
-    })
-
-    triggerDownload(blob, `deck${chunkIndex}.png`)
-    chunkIndex++
-  }
-}
-
-const downloadZipBundle = async () => {
-  const files = cards.value
-    .map((card, index) => {
-      const url = getImageUris(card as Scry.Card)?.large
-      if (!url) return undefined
-
-      const normalizedName = `${String(index + 1).padStart(3, '0')}_${sanitizeCardName(card.name)}.png`
-      return {
-        url,
-        fileName: normalizedName,
-      }
-    })
-    .filter((file): file is { url: string, fileName: string } => Boolean(file))
-
-  if (files.length === 0) return
-
-  const blob = await $fetch<Blob>('/api/downloadZip', {
-    method: 'POST',
-    body: { files },
-    timeout: 600000,
-    responseType: 'blob',
-  })
-
-  const zipFileName
-    = cards.value.length === 1
-      ? `${sanitizeCardName(cards.value[0]?.name ?? 'card')}.zip`
-      : 'scryfall-images.zip'
-
-  triggerDownload(blob, zipFileName)
-}
-
-const onDownloadTtsClick = () => {
-  performDownload(downloadTtsImages)
-}
-
-const onDownloadZipClick = () => {
-  performDownload(downloadZipBundle)
 }
 </script>
