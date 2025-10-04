@@ -164,27 +164,29 @@ const performDownload = async (task: () => Promise<void>) => {
 }
 
 const downloadTtsImages = async () => {
-  const stackSize = 30
-  let chunkIndex = 0
+  const images = cards.value
+    .map((card) => {
+      const imageUri = getImageUris(card as Scry.Card)?.large
+      if (!imageUri) return undefined
 
-  for (let start = 0; start < cards.value.length; start += stackSize) {
-    const targetCards = cards.value.slice(start, start + stackSize)
-    const urls = targetCards
-      .map(card => getImageUris(card as Scry.Card)?.large)
-      .filter((url): url is string => Boolean(url))
-
-    if (urls.length === 0) continue
-
-    const blob = await $fetch<Blob>('/api/downloadImage', {
-      method: 'POST',
-      body: { urls },
-      timeout: 600000,
-      responseType: 'blob',
+      return {
+        id: (card as Scry.Card).id,
+        imageUri,
+      }
     })
+    .filter((entry): entry is { id: string, imageUri: string } => Boolean(entry))
 
-    triggerDownload(blob, `deck${chunkIndex}.png`)
-    chunkIndex++
-  }
+  if (images.length === 0) return
+
+  const blob = await $fetch<Blob>('/api/downloadTtsImages', {
+    method: 'POST',
+    body: { images },
+    timeout: 600000,
+    responseType: 'blob',
+  })
+
+  const fileName = blob.type === 'application/zip' ? 'tts-images.zip' : 'deck.png'
+  triggerDownload(blob, fileName)
 }
 
 const downloadZipBundle = async () => {
