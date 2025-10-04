@@ -8,6 +8,10 @@ const ZIP_FILE_NAME = 'tts-images.zip'
 const SINGLE_IMAGE_FILE_NAME = 'deck.png'
 
 type MergePayloadItem = { id: string, imageUri: string }
+type MergeRequestPayload = {
+  cards: MergePayloadItem[]
+  hiddenImage?: string
+}
 
 const chunkArray = <T>(items: T[], chunkSize: number): T[][] => {
   if (chunkSize <= 0) return [items]
@@ -23,11 +27,13 @@ type IncomingImage = { id?: unknown, imageUri?: unknown }
 type DownloadImageRequest = {
   images?: Array<IncomingImage | null | undefined>
   urls?: Array<unknown>
+  hiddenImage?: unknown
 }
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<DownloadImageRequest | undefined>(event) ?? {}
   let images: Array<{ id?: string, imageUri: string }> = []
+  let hiddenImage: string | undefined
 
   if (Array.isArray(body.images)) {
     images = body.images
@@ -49,6 +55,17 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'No images provided' })
   }
 
+  if (typeof body.hiddenImage === 'string') {
+    const trimmed = body.hiddenImage.trim()
+    if (trimmed.length > 0) {
+      hiddenImage = trimmed
+    }
+  }
+
+  if (hiddenImage) {
+    console.info('[downloadTtsImages] hiddenImage payload (base64):', hiddenImage)
+  }
+
   const payload = images.map((entry: { id?: string, imageUri: string }, index: number): MergePayloadItem => {
     const id = typeof entry.id === 'string' ? entry.id.trim() : ''
     const imageUri = entry.imageUri.trim()
@@ -65,8 +82,12 @@ export default defineEventHandler(async (event) => {
 
   for (const [chunkIndex, chunk] of chunks.entries()) {
     try {
+      const requestPayload: MergeRequestPayload = { cards: chunk }
+      if (hiddenImage) {
+        requestPayload.hiddenImage = hiddenImage
+      }
       const response = await got.post(MERGE_ENDPOINT, {
-        json: chunk,
+        json: requestPayload,
         responseType: 'buffer',
         timeout: {
           request: 600000,
