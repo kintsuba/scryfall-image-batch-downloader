@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main :aria-busy="isDownloadingRef">
     <SibdAlerts
       :is-loading="isLoadingRef"
       :error-card-names="errorCardNames"
@@ -64,6 +64,27 @@
         </div>
       </template>
     </UModal>
+
+    <Teleport to="body">
+      <div
+        v-if="isDownloadingRef"
+        class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-black/70 backdrop-blur-sm text-white"
+        role="status"
+        aria-live="assertive"
+      >
+        <UIcon
+          name="i-material-symbols-sync-rounded"
+          class="w-16 h-16 animate-spin"
+          aria-hidden="true"
+        />
+        <p class="text-lg font-semibold">
+          Downloading your files…
+        </p>
+        <p class="text-sm text-white/80">
+          Large archives may take a few minutes to prepare.
+        </p>
+      </div>
+    </Teleport>
   </main>
 </template>
 
