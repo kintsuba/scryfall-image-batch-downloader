@@ -31,7 +31,7 @@
         :loading="isDownloadingRef"
         @click="openDownloadModal"
       >
-        <span class="font-bold">Download</span>
+        <span class="font-bold">{{ t('select.downloadButton') }}</span>
       </UButton>
     </div>
 
@@ -60,6 +60,7 @@ const {
   selectCard,
 } = useCards()
 const { selectedLanguage } = useLanguage()
+const { t } = useI18n()
 
 const errorCardNames = ref<string[]>([])
 const isDisplayModalRef = ref<boolean>(false)

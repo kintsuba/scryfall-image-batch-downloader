@@ -1,6 +1,6 @@
 import * as Scry from 'scryfall-sdk'
 import {
-  DEFAULT_LANGUAGE,
+  DEFAULT_LANGUAGE_CODE,
   isSupportedLanguageCode,
 } from '~/constants/languages'
 
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   const normalizedLanguage = langQuery?.toLowerCase()
   const requestedLanguage = isSupportedLanguageCode(normalizedLanguage)
     ? normalizedLanguage
-    : DEFAULT_LANGUAGE
+    : DEFAULT_LANGUAGE_CODE
 
   Scry.setAgent('Scryfall Image Batch Downloader', '1.0.0')
   const card = await Scry.Cards.byName(decodeURI(name), true)

@@ -15,6 +15,10 @@
         fill="currentFill"
       />
     </svg>
-    <span class="sr-only">Loading...</span>
+    <span class="sr-only">{{ t('common.loading') }}</span>
   </div>
 </template>
+
+<script setup lang="ts">
+const { t } = useI18n()
+</script>

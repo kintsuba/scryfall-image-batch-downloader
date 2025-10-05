@@ -1,5 +1,5 @@
 <template>
-  <UApp>
+  <UApp :locale="locales[locale]">
     <div class="h-screen">
       <SibdHeader />
       <NuxtPage />
@@ -8,17 +8,23 @@
 </template>
 
 <script setup lang="ts">
+import * as locales from '@nuxt/ui/locale'
+
+const { locale, t } = useI18n()
+
+const lang = computed(() => locales[locale.value].code)
+const dir = computed(() => locales[locale.value].dir)
+
 const SibdHeader = resolveComponent('SibdHeader')
 
 const title = computed(() => 'Scryfall Image Batch Downloader')
-const description = ref(
-  'Scryfallの画像を一括でダウンロードするためのサイトです。',
-)
+const description = computed(() => t('app.description'))
 
 useHead({
   title,
   htmlAttrs: {
-    lang: 'ja',
+    lang,
+    dir,
     prefix: 'og: http://ogp.me/ns#',
   },
 })

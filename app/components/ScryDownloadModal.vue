@@ -1,18 +1,18 @@
 <template>
   <UModal
     v-model:open="isModalOpenRef"
-    title="Select a download option"
+    :title="t('downloadModal.title')"
   >
     <template #body>
       <div class="flex flex-col gap-6 py-2">
         <section class="flex flex-col gap-3">
           <UFormField
-            label="File name (optional)"
-            description="Specify the download file name."
+            :label="t('downloadModal.fileNameField.label')"
+            :description="t('downloadModal.fileNameField.description')"
           >
             <UInput
               v-model="customFileNameRef"
-              placeholder="e.g. my-deck"
+              :placeholder="t('downloadModal.fileNameField.placeholder')"
               :disabled="isDownloadingRef"
             />
           </UFormField>
@@ -24,10 +24,10 @@
               <div class="flex flex-col gap-3">
                 <div class="flex flex-col gap-1">
                   <h3 class="text-base font-semibold">
-                    TTS Images
+                    {{ t('downloadModal.ttsCard.title') }}
                   </h3>
                   <p class="text-sm text-white/60">
-                    Download image sheets for Tabletop Simulator.
+                    {{ t('downloadModal.ttsCard.description') }}
                   </p>
                 </div>
                 <UButton
@@ -38,18 +38,18 @@
                   size="lg"
                   @click="onDownloadTtsClick"
                 >
-                  Download as TTS image sheets
+                  {{ t('downloadModal.ttsCard.button') }}
                 </UButton>
               </div>
             </template>
 
             <div class="flex flex-col gap-3">
-              <UFormField label="Hidden Image (optional)">
+              <UFormField :label="t('downloadModal.hiddenImageField.label')">
                 <UFileUpload
                   v-model="hiddenImageFileRef"
                   accept="image/jpeg,image/png"
-                  label="Click or drag to choose an image"
-                  description="Used as the hiddenImage value when downloading TTS images."
+                  :label="t('downloadModal.hiddenImageField.uploadLabel')"
+                  :description="t('downloadModal.hiddenImageField.uploadDescription')"
                   :disabled="isDownloadingRef"
                   :ui="{ base: 'min-h-36' }"
                 />
@@ -57,7 +57,7 @@
                   v-if="hiddenImageFileRef"
                   class="text-xs text-white/60"
                 >
-                  Selected: {{ hiddenImageFileRef.name }}
+                  {{ t('downloadModal.hiddenImageField.selected', { fileName: hiddenImageFileRef.name }) }}
                 </p>
               </UFormField>
             </div>
@@ -68,10 +68,10 @@
               <div class="flex flex-col gap-3">
                 <div class="flex flex-col gap-1">
                   <h3 class="text-base font-semibold">
-                    ZIP Archive
+                    {{ t('downloadModal.zipCard.title') }}
                   </h3>
                   <p class="text-sm text-white/60">
-                    Download individual card images bundled together.
+                    {{ t('downloadModal.zipCard.description') }}
                   </p>
                 </div>
                 <UButton
@@ -82,7 +82,7 @@
                   size="lg"
                   @click="onDownloadZipClick"
                 >
-                  Download as ZIP archive
+                  {{ t('downloadModal.zipCard.button') }}
                 </UButton>
               </div>
             </template>
@@ -105,10 +105,10 @@
         aria-hidden="true"
       />
       <p class="text-lg font-semibold">
-        Downloading your files…
+        {{ t('downloadModal.progressTitle') }}
       </p>
       <p class="text-sm text-white/80">
-        Large archives may take a few minutes to prepare.
+        {{ t('downloadModal.progressDescription') }}
       </p>
     </div>
   </Teleport>
@@ -118,6 +118,7 @@
 import type * as Scry from 'scryfall-sdk'
 
 const { cards } = useCards()
+const { t } = useI18n()
 
 const props = defineProps<{
   modelValue: boolean

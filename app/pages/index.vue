@@ -7,11 +7,7 @@
         v-model="cardsStringRef"
         size="xl"
         :rows="12"
-        placeholder="1 Kenrith, the Returned King
-1 Archivist of Oghma
-1 Avacyn's Pilgrim
-1 Biomancer's Familiar
-..."
+        :placeholder="t('index.cardsPlaceholder')"
       />
 
       <div class="flex gap-4">
@@ -26,7 +22,7 @@
           size="xl"
           color="primary"
           variant="solid"
-          label="Search"
+          :label="t('index.searchButton')"
           :trailing="false"
           :disabled="!canStart"
           @click="toSelect"
@@ -39,7 +35,7 @@
 <script setup lang="ts">
 import type * as Scry from 'scryfall-sdk'
 import {
-  DEFAULT_LANGUAGE,
+  DEFAULT_LANGUAGE_CODE,
   SUPPORTED_LANGUAGE_CODES,
   SUPPORTED_LOCALES,
 } from '~/constants/languages'
@@ -51,6 +47,7 @@ const {
   selectedLanguageInitialized,
   setSelectedLanguage,
 } = useLanguage()
+const { t } = useI18n()
 
 const supportedLocales = [...SUPPORTED_LOCALES]
 const supportedLanguageCodes = SUPPORTED_LANGUAGE_CODES
@@ -78,15 +75,13 @@ onMounted(() => {
 
     const fallbackLanguage = matchedLanguage
       ? (matchedLanguage as SupportedLanguageCode)
-      : DEFAULT_LANGUAGE
+      : DEFAULT_LANGUAGE_CODE
 
     setSelectedLanguage(fallbackLanguage)
   }
 })
 
-const cardsStringRef = ref<string>(
-  '1 Kenrith, the Returned King\n1 Archivist of Oghma',
-)
+const cardsStringRef = ref<string>(t('index.cardsInitialValue'))
 
 const selectedLanguageModel = computed<SupportedLanguageCode>({
   get: () => selectedLanguage.value,

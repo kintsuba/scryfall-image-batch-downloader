@@ -9,7 +9,7 @@
       <UAlert
         v-if="isDisplayLoadingAlert && isLoading"
         key="isLoading"
-        :title="`Now Loading: ${cards.length} / ${cardNames.length}`"
+        :title="t('alerts.loading', { current: cards.length, total: cardNames.length })"
         icon="i-material-symbols-search-rounded"
         :close-button="{
           icon: 'i-material-symbols-close-rounded',
@@ -24,7 +24,7 @@
           isDisplayCompleteAlert && !isLoading && errorCardNames.length === 0
         "
         key="isSuccess"
-        :title="`Loading Complete: ${cards.length}`"
+        :title="t('alerts.success', { count: cards.length })"
         icon="i-material-symbols-done-rounded"
         color="success"
         :close-button="{
@@ -42,7 +42,7 @@
             && errorCardNames.length !== 0
         "
         key="isNotDownloaded"
-        title="The following file(s) could not be downloaded."
+        :title="t('alerts.errorTitle')"
         icon="i-material-symbols-feedback-rounded"
         color="error"
         :close-button="{
@@ -66,7 +66,7 @@
       <UAlert
         v-if="isDisplayDoubleFaceAlert && doubleFacedCards.length > 0"
         key="doubleFacedCardExists"
-        title="Double-Faced Card(s) exist."
+        :title="t('alerts.doubleFacedTitle')"
         icon="i-material-symbols-feedback-rounded"
         color="warning"
         :close-button="{
@@ -99,6 +99,7 @@
 
 <script setup lang="ts">
 const { cards, cardNames } = useCards()
+const { t } = useI18n()
 
 const props = defineProps<{
   isLoading: boolean

@@ -38,14 +38,14 @@
               variant="outline"
               @click="unset"
             >
-              Cancel
+              {{ t('modal.cancel') }}
             </UButton>
             <UButton
               size="md"
               icon="i-material-symbols-replace-image"
               @click="changeCard"
             >
-              Change Image
+              {{ t('modal.changeImage') }}
             </UButton>
           </div>
         </div>
@@ -63,6 +63,7 @@ const CardSuggestion = resolveComponent('modal/CardSuggestion')
 
 const { selectedCard, selectCard, updateCardsWithSelectedCard } = useCards()
 const { selectedLanguage } = useLanguage()
+const { t } = useI18n()
 
 const englishLabel = findLanguageLabel('en')
 const selectedLanguageLabel = computed(() =>
