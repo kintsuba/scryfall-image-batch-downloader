@@ -1,6 +1,6 @@
 import * as Scry from 'scryfall-sdk'
 import {
-  DEFAULT_LANGUAGE,
+  DEFAULT_LANGUAGE_CODE,
   isSupportedLanguageCode,
 } from '~/constants/languages'
 import type { SupportedLanguageCode } from '~/constants/languages'
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   const requestedLanguage: SupportedLanguageCode
     = isSupportedLanguageCode(bodyLanguage)
       ? bodyLanguage
-      : DEFAULT_LANGUAGE
+      : DEFAULT_LANGUAGE_CODE
 
   const cards: Scry.Card[] = []
   const localizedCards: Scry.Card[] = []

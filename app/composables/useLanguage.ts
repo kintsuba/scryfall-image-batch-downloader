@@ -1,11 +1,11 @@
 import type { Ref } from 'vue'
-import { DEFAULT_LANGUAGE } from '~/constants/languages'
+import { DEFAULT_LANGUAGE_CODE } from '~/constants/languages'
 import type { SupportedLanguageCode } from '~/constants/languages'
 
 export const useLanguage = () => {
   const selectedLanguage: Ref<SupportedLanguageCode> = useState(
     'selectedLanguage',
-    () => DEFAULT_LANGUAGE,
+    () => DEFAULT_LANGUAGE_CODE,
   )
   const selectedLanguageInitialized: Ref<boolean>
     = useState('selectedLanguageInitialized', () => false)
