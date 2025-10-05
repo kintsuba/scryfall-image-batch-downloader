@@ -35,7 +35,6 @@
 <script setup lang="ts">
 import type * as Scry from 'scryfall-sdk'
 import {
-  DEFAULT_LANGUAGE_CODE,
   SUPPORTED_LANGUAGE_CODES,
   SUPPORTED_LOCALES,
 } from '~/constants/languages'
@@ -44,10 +43,9 @@ import type { SupportedLanguageCode } from '~/constants/languages'
 const { cards, updateCardNames } = useCards()
 const {
   selectedLanguage,
-  selectedLanguageInitialized,
   setSelectedLanguage,
 } = useLanguage()
-const { t } = useI18n()
+const { locale, t } = useI18n()
 
 const supportedLocales = [...SUPPORTED_LOCALES]
 const supportedLanguageCodes = SUPPORTED_LANGUAGE_CODES
@@ -57,28 +55,7 @@ onMounted(() => {
     const names = (cards.value as Scry.Card[]).map(c => c.name)
     cardsStringRef.value = '1 ' + names.join('\n1 ')
   }
-
-  if (!selectedLanguageInitialized.value) {
-    const navigatorLanguages = window.navigator.languages?.length
-      ? window.navigator.languages
-      : [window.navigator.language]
-
-    const normalizedNavigatorLanguages = navigatorLanguages
-      .map(language => language?.split?.('-')?.[0])
-      .filter((language): language is string => Boolean(language))
-
-    const matchedLanguage = normalizedNavigatorLanguages.find((language) => {
-      return supportedLanguageCodes.includes(
-        language as SupportedLanguageCode,
-      )
-    })
-
-    const fallbackLanguage = matchedLanguage
-      ? (matchedLanguage as SupportedLanguageCode)
-      : DEFAULT_LANGUAGE_CODE
-
-    setSelectedLanguage(fallbackLanguage)
-  }
+  setSelectedLanguage(locale.value)
 })
 
 const cardsStringRef = ref<string>(t('index.cardsInitialValue'))
