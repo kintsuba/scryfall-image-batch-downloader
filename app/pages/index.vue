@@ -1,21 +1,35 @@
 <template>
   <main class="h-full">
     <section
-      class="flex flex-col gap-5 items-center justify-center h-full mt-[-48px]"
+      class="flex flex-col md:flex-row h-full items-center justify-center mt-[-48px] gap-12"
     >
-      <UTextarea
-        v-model="cardsStringRef"
-        size="xl"
-        :rows="12"
-        :placeholder="t('index.cardsPlaceholder')"
-      />
+      <div class="flex w-full max-w-xs items-center justify-center gap-8">
+        <UFormField
+          :label="t('index.deckList')"
+          :error="deckListError"
+          class="flex-1"
+        >
+          <UTextarea
+            v-model="cardsStringRef"
+            size="xl"
+            :rows="12"
+            :placeholder="t('index.cardsPlaceholder')"
+            class="w-full"
+          />
+        </UFormField>
+      </div>
 
-      <div class="flex gap-4">
-        <ULocaleSelect
-          v-model="selectedLanguageModel"
-          size="xl"
-          :locales="supportedLocales"
-        />
+      <div class="flex flex-row md:flex-col items-end md:items-center justify-center gap-10 ">
+        <UFormField
+          :label="t('index.selectCardLanguage')"
+          class="flex-1"
+        >
+          <ULocaleSelect
+            v-model="selectedLanguageModel"
+            size="xl"
+            :locales="supportedLocales"
+          />
+        </UFormField>
 
         <UButton
           icon="i-material-symbols-image-search-rounded"
@@ -82,6 +96,17 @@ const cardNamesRef = computed(() => {
   else {
     return []
   }
+})
+
+const deckListError = computed(() => {
+  if (cardsStringRef.value === '') return t('index.deckListEmptyError')
+
+  const tempArray = cardsStringRef.value.split('\n')
+
+  if (!tempArray.every(t => /\d+ (.*)/.test(t))) {
+    return t('index.deckListInvalidError')
+  }
+  return !cardNamesRef.value.length
 })
 
 const canStart = computed(() => {

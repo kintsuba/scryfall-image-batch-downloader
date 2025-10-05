@@ -32,7 +32,7 @@ export default defineI18nLocale(async () => {
       },
       zipCard: {
         title: 'ZIPアーカイブ',
-        description: '個別のカード画像をまとめてダウンロードします。',
+        description: '選択したカード画像をまとめてダウンロードします。',
         button: 'ZIPアーカイブとしてダウンロード',
       },
       progressTitle: 'ファイルをダウンロードしています...',
@@ -42,6 +42,10 @@ export default defineI18nLocale(async () => {
       cardsPlaceholder: '1 Kenrith, the Returned King\n1 Archivist of Oghma\n1 Avacyn\'s Pilgrim\n1 Biomancer\'s Familiar\n...',
       cardsInitialValue: '1 Kenrith, the Returned King\n1 Archivist of Oghma',
       searchButton: '検索',
+      deckList: 'デッキリスト',
+      selectCardLanguage: 'カードの言語を選択',
+      deckListInvalidError: 'デッキリストに無効な文字列が含まれています。',
+      deckListEmptyError: 'デッキリストが空です。',
     },
     select: {
       downloadButton: 'ダウンロード',

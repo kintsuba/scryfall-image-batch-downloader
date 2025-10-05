@@ -42,6 +42,10 @@ export default defineI18nLocale(async () => {
       cardsPlaceholder: '1 Kenrith, the Returned King\n1 Archivist of Oghma\n1 Avacyn\'s Pilgrim\n1 Biomancer\'s Familiar\n...',
       cardsInitialValue: '1 Kenrith, the Returned King\n1 Archivist of Oghma',
       searchButton: 'Suchen',
+      deckList: 'Deckliste',
+      selectCardLanguage: 'Kartensprache auswählen',
+      deckListInvalidError: 'Die Deckliste enthält ungültige Zeichenfolgen.',
+      deckListEmptyError: 'Die Deckliste ist leer.',
     },
     select: {
       downloadButton: 'Herunterladen',
