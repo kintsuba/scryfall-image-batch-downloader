@@ -3,6 +3,7 @@
     <template #right>
       <ULocaleSelect
         v-model="locale"
+        size="sm"
         class="mr-2"
         :locales="SUPPORTED_LOCALES"
         @update:model-value="setLocale($event as typeof locale)"

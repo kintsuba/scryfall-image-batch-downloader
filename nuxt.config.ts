@@ -16,12 +16,12 @@ export default defineNuxtConfig({
     defaultLocale: 'en',
     strategy: 'no_prefix',
     locales: [
-      { code: 'en', language: 'en-US', name: 'English', file: 'en.json' },
-      { code: 'ja', language: 'ja-JP', name: 'Japanese', file: 'ja.json' },
-      { code: 'fr', language: 'fr-FR', name: 'French', file: 'fr.json' },
-      { code: 'it', language: 'it-IT', name: 'Italian', file: 'it.json' },
-      { code: 'de', language: 'de-DE', name: 'German', file: 'de.json' },
-      { code: 'es', language: 'es-ES', name: 'Spanish', file: 'es.json' },
+      { code: 'en', language: 'en-US', name: 'English', file: 'en.ts' },
+      { code: 'ja', language: 'ja-JP', name: 'Japanese', file: 'ja.ts' },
+      { code: 'fr', language: 'fr-FR', name: 'French', file: 'fr.ts' },
+      { code: 'it', language: 'it-IT', name: 'Italian', file: 'it.ts' },
+      { code: 'de', language: 'de-DE', name: 'German', file: 'de.ts' },
+      { code: 'es', language: 'es-ES', name: 'Spanish', file: 'es.ts' },
     ],
   },
 })
