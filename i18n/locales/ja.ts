@@ -31,9 +31,9 @@ export default defineI18nLocale(async () => {
         selected: '選択済み: {fileName}',
       },
       zipCard: {
-        title: 'ZIPアーカイブ',
-        description: '選択したカード画像をまとめてダウンロードします。',
-        button: 'ZIPアーカイブとしてダウンロード',
+        title: 'ZIPファイル',
+        description: '選択したカード画像をZipファイルにまとめてダウンロードします。',
+        button: 'ZIPファイルをダウンロード',
       },
       progressTitle: 'ファイルをダウンロードしています...',
       progressDescription: '大きなアーカイブは準備に数分かかる場合があります。',
