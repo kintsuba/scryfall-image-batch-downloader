@@ -2,6 +2,7 @@
   <UModal
     v-model:open="isModalOpenRef"
     :title="t('downloadModal.title')"
+    :ui="{ content: 'max-w-xl sm:max-w-2xl' }"
   >
     <template #body>
       <div class="flex flex-col gap-6 py-2">
@@ -19,6 +20,35 @@
         </section>
 
         <div class="flex flex-col gap-4 md:flex-row">
+          <UCard
+            class="flex-1"
+            :ui="{ root: 'h-full' }"
+          >
+            <template #header>
+              <div class="flex flex-col gap-3">
+                <div class="flex flex-col gap-1">
+                  <h3 class="text-base font-semibold">
+                    {{ t('downloadModal.zipCard.title') }}
+                  </h3>
+                  <p class="text-sm text-white/60">
+                    {{ t('downloadModal.zipCard.description') }}
+                  </p>
+                </div>
+              </div>
+            </template>
+            <template #footer>
+              <UButton
+                icon="i-material-symbols-archive-rounded"
+                :loading="isDownloadingRef"
+                :disabled="isDownloadingRef"
+                class="w-full"
+                size="lg"
+                @click="onDownloadZipClick"
+              >
+                {{ t('downloadModal.zipCard.button') }}
+              </UButton>
+            </template>
+          </UCard>
           <UCard class="flex-1">
             <template #header>
               <div class="flex flex-col gap-3">
@@ -30,16 +60,6 @@
                     {{ t('downloadModal.ttsCard.description') }}
                   </p>
                 </div>
-                <UButton
-                  icon="i-material-symbols-dashboard-rounded"
-                  :loading="isDownloadingRef"
-                  :disabled="isDownloadingRef"
-                  class="w-full"
-                  size="lg"
-                  @click="onDownloadTtsClick"
-                >
-                  {{ t('downloadModal.ttsCard.button') }}
-                </UButton>
               </div>
             </template>
 
@@ -53,38 +73,20 @@
                   :disabled="isDownloadingRef"
                   :ui="{ base: 'min-h-36' }"
                 />
-                <p
-                  v-if="hiddenImageFileRef"
-                  class="text-xs text-white/60"
-                >
-                  {{ t('downloadModal.hiddenImageField.selected', { fileName: hiddenImageFileRef.name }) }}
-                </p>
               </UFormField>
             </div>
-          </UCard>
 
-          <UCard class="flex-1">
-            <template #header>
-              <div class="flex flex-col gap-3">
-                <div class="flex flex-col gap-1">
-                  <h3 class="text-base font-semibold">
-                    {{ t('downloadModal.zipCard.title') }}
-                  </h3>
-                  <p class="text-sm text-white/60">
-                    {{ t('downloadModal.zipCard.description') }}
-                  </p>
-                </div>
-                <UButton
-                  icon="i-material-symbols-archive-rounded"
-                  :loading="isDownloadingRef"
-                  :disabled="isDownloadingRef"
-                  class="w-full"
-                  size="lg"
-                  @click="onDownloadZipClick"
-                >
-                  {{ t('downloadModal.zipCard.button') }}
-                </UButton>
-              </div>
+            <template #footer>
+              <UButton
+                icon="i-material-symbols-dashboard-rounded"
+                :loading="isDownloadingRef"
+                :disabled="isDownloadingRef"
+                class="w-full"
+                size="lg"
+                @click="onDownloadTtsClick"
+              >
+                {{ t('downloadModal.ttsCard.button') }}
+              </UButton>
             </template>
           </UCard>
         </div>
