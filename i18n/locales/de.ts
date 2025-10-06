@@ -11,6 +11,7 @@ export default defineI18nLocale(async () => {
       success: 'Ladevorgang abgeschlossen: {count}',
       errorTitle: 'Die folgenden Dateien konnten nicht heruntergeladen werden.',
       doubleFacedTitle: 'Es sind doppelseitige Karten vorhanden.',
+      doubleFacedDownloadButton: 'Rückseiten als ZIP herunterladen',
     },
     downloadModal: {
       title: 'Wähle eine Download-Option',
@@ -28,7 +29,6 @@ export default defineI18nLocale(async () => {
         label: 'Verdecktes Bild (optional)',
         uploadLabel: 'Zum Auswählen klicken oder ziehen',
         uploadDescription: 'Dieses Bild wird als „verdeckte“ Kartenseite für alle Karten verwendet.',
-        selected: 'Ausgewählt: {fileName}',
       },
       zipCard: {
         title: 'ZIP-Archiv',

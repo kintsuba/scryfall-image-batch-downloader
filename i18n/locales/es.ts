@@ -11,6 +11,7 @@ export default defineI18nLocale(async () => {
       success: 'Carga completada: {count}',
       errorTitle: 'No se pudieron descargar los siguientes archivos.',
       doubleFacedTitle: 'Hay cartas de doble cara.',
+      doubleFacedDownloadButton: 'Descargar reversos en ZIP',
     },
     downloadModal: {
       title: 'Selecciona una opción de descarga',
@@ -28,7 +29,6 @@ export default defineI18nLocale(async () => {
         label: 'Imagen oculta (opcional)',
         uploadLabel: 'Haz clic o arrastra para elegir una imagen',
         uploadDescription: 'Esta imagen se utilizará como la cara oculta de todas las cartas.',
-        selected: 'Seleccionado: {fileName}',
       },
       zipCard: {
         title: 'Archivo ZIP',

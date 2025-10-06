@@ -11,6 +11,7 @@ export default defineI18nLocale(async () => {
       success: 'Chargement terminé : {count}',
       errorTitle: 'Les fichiers suivants n\'ont pas pu être téléchargés.',
       doubleFacedTitle: 'Des cartes recto-verso sont présentes.',
+      doubleFacedDownloadButton: 'Télécharger les versos en ZIP',
     },
     downloadModal: {
       title: 'Choisissez une option de téléchargement',
@@ -28,7 +29,6 @@ export default defineI18nLocale(async () => {
         label: 'Image cachée (facultatif)',
         uploadLabel: 'Cliquez ou faites glisser pour choisir une image',
         uploadDescription: 'Cette image sera utilisée comme face cachée pour toutes les cartes.',
-        selected: 'Sélectionné : {fileName}',
       },
       zipCard: {
         title: 'Archive ZIP',

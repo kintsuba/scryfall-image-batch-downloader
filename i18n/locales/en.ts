@@ -11,6 +11,7 @@ export default defineI18nLocale(async () => {
       success: 'Loading Complete: {count}',
       errorTitle: 'The following file(s) could not be downloaded.',
       doubleFacedTitle: 'Double-Faced Card(s) exist.',
+      doubleFacedDownloadButton: 'Download card backs as ZIP',
     },
     downloadModal: {
       title: 'Select a download option',
@@ -28,7 +29,6 @@ export default defineI18nLocale(async () => {
         label: 'Hidden Image (optional)',
         uploadLabel: 'Click or drag to choose an image',
         uploadDescription: 'This image will be used as the "hidden" card face for all cards.',
-        selected: 'Selected: {fileName}',
       },
       zipCard: {
         title: 'ZIP Archive',
