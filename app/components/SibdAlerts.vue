@@ -11,13 +11,8 @@
         key="isLoading"
         :title="t('alerts.loading', { current: cards.length, total: cardNames.length })"
         icon="i-material-symbols-search-rounded"
-        :close-button="{
-          icon: 'i-material-symbols-close-rounded',
-          color: 'neutral',
-          variant: 'link',
-          size: '2xs',
-        }"
-        @close="isDisplayLoadingAlert = false"
+        close
+        @update:open="isDisplayLoadingAlert = false"
       />
       <UAlert
         v-if="
@@ -27,13 +22,8 @@
         :title="t('alerts.success', { count: cards.length })"
         icon="i-material-symbols-done-rounded"
         color="success"
-        :close-button="{
-          icon: 'i-material-symbols-close-rounded',
-          color: 'neutral',
-          variant: 'link',
-          size: '2xs',
-        }"
-        @close="isDisplayCompleteAlert = false"
+        close
+        @update:open="isDisplayCompleteAlert = false"
       />
       <UAlert
         v-if="
@@ -45,13 +35,8 @@
         :title="t('alerts.errorTitle')"
         icon="i-material-symbols-feedback-rounded"
         color="error"
-        :close-button="{
-          icon: 'i-material-symbols-close-rounded',
-          color: 'neutral',
-          variant: 'link',
-          size: '2xs',
-        }"
-        @close="isDisplayErrorAlert = false"
+        close
+        @update:open="isDisplayErrorAlert = false"
       >
         <template #description>
           <ul
@@ -69,25 +54,27 @@
         :title="t('alerts.doubleFacedTitle')"
         icon="i-material-symbols-feedback-rounded"
         color="warning"
-        :close-button="{
-          icon: 'i-material-symbols-close-rounded',
-          color: 'neutral',
-          variant: 'link',
-          size: '2xs',
-        }"
-        @close="isDisplayDoubleFaceAlert = false"
+        close
+        :actions="[
+          {
+            label: t('alerts.doubleFacedDownloadButton'),
+            color: 'neutral',
+            variant: 'soft',
+            onClick: onDownloadCardBacksClick,
+          },
+        ]"
+        @update:open="isDisplayDoubleFaceAlert = false"
       >
         <template #description>
-          <ul
-            v-for="card in doubleFacedCards"
-            :key="card.id"
-            class="list-disc"
-          >
-            <li>
+          <ul class="list-disc pl-4">
+            <li
+              v-for="card in doubleFacedCards"
+              :key="card.id"
+            >
               <a
                 :href="card.scryfall_uri"
                 target="_blank"
-                class="link:text-pink-400"
+                class="hover:text-pink-400"
               >{{ card.name }}</a>
             </li>
           </ul>
@@ -98,6 +85,8 @@
 </template>
 
 <script setup lang="ts">
+import type * as Scry from 'scryfall-sdk'
+
 const { cards, cardNames } = useCards()
 const { t } = useI18n()
 
@@ -110,6 +99,7 @@ const isDisplayLoadingAlert = ref<boolean>(true)
 const isDisplayCompleteAlert = ref<boolean>(true)
 const isDisplayErrorAlert = ref<boolean>(true)
 const isDisplayDoubleFaceAlert = ref<boolean>(true)
+const isDownloadingCardBacks = ref<boolean>(false)
 
 const doubleFacedCards = computed(() => {
   if (cards.value.length === 0) return []
@@ -118,4 +108,80 @@ const doubleFacedCards = computed(() => {
     c => c.card_faces.length >= 2 && c.card_faces[0]?.image_uris,
   )
 })
+
+const triggerDownload = (file: Blob, fileName: string) => {
+  const url = window.URL.createObjectURL(file)
+  const link = document.createElement('a')
+  link.href = url
+  link.setAttribute('download', fileName)
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(url)
+}
+
+const sanitizeFileName = (name: string, fallback = '') => {
+  const sanitized = name
+    .replace(/\\/g, '-')
+    .replace(/\//g, '-')
+    .replace(/[:*?"<>|]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[. ]+$/, '')
+
+  return sanitized || fallback
+}
+
+const getCardBackImageUrl = (card: Scry.Card) => {
+  const backFace = card.card_faces?.[1]
+  if (backFace?.image_uris?.png) return backFace.image_uris.png
+  if (backFace?.image_uris?.large) return backFace.image_uris.large
+}
+
+const downloadCardBacksZip = async () => {
+  if (isDownloadingCardBacks.value) return
+  if (doubleFacedCards.value.length === 0) return
+
+  const files = doubleFacedCards.value
+    .map((card, index) => {
+      const url = getCardBackImageUrl(card as Scry.Card)
+      if (!url) return undefined
+
+      const normalizedName = `${String(index + 1).padStart(3, '0')}_${sanitizeFileName(card.name, `card-${index + 1}`)}_back.png`
+      return {
+        url,
+        fileName: normalizedName,
+      }
+    })
+    .filter((file): file is { url: string, fileName: string } => Boolean(file))
+
+  if (files.length === 0) return
+
+  isDownloadingCardBacks.value = true
+  try {
+    const blob = await $fetch<Blob>('/api/downloadZip', {
+      method: 'POST',
+      body: { files },
+      timeout: 600000,
+      responseType: 'blob',
+    })
+
+    const defaultZipFileName
+      = doubleFacedCards.value.length === 1
+        ? `${sanitizeFileName(`${doubleFacedCards.value[0]?.name ?? 'card'} back`) || 'card-back'}.zip`
+        : 'double-faced-card-backs.zip'
+
+    triggerDownload(blob, defaultZipFileName)
+  }
+  catch (error) {
+    console.error(error)
+  }
+  finally {
+    isDownloadingCardBacks.value = false
+  }
+}
+
+const onDownloadCardBacksClick = () => {
+  downloadCardBacksZip()
+}
 </script>

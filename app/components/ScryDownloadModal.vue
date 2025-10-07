@@ -30,7 +30,7 @@
                   <h3 class="text-base font-semibold">
                     {{ t('downloadModal.zipCard.title') }}
                   </h3>
-                  <p class="text-sm text-white/60">
+                  <p class="text-sm text-muted">
                     {{ t('downloadModal.zipCard.description') }}
                   </p>
                 </div>
@@ -56,7 +56,7 @@
                   <h3 class="text-base font-semibold">
                     {{ t('downloadModal.ttsCard.title') }}
                   </h3>
-                  <p class="text-sm text-white/60">
+                  <p class="text-sm text-muted">
                     {{ t('downloadModal.ttsCard.description') }}
                   </p>
                 </div>
@@ -97,7 +97,7 @@
   <Teleport to="body">
     <div
       v-if="isDownloadingRef"
-      class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-black/70 backdrop-blur-sm text-white"
+      class="fixed inset-0 z-50 flex flex-col items-center justify-center gap-4 bg-black/70 backdrop-blur-sm text-default"
       role="status"
       aria-live="assertive"
     >
@@ -109,7 +109,7 @@
       <p class="text-lg font-semibold">
         {{ t('downloadModal.progressTitle') }}
       </p>
-      <p class="text-sm text-white/80">
+      <p class="text-sm text-muted">
         {{ t('downloadModal.progressDescription') }}
       </p>
     </div>

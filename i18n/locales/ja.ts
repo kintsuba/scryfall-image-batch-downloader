@@ -11,6 +11,7 @@ export default defineI18nLocale(async () => {
       success: '読み込み完了: {count}枚',
       errorTitle: '次のファイルをダウンロードできませんでした。',
       doubleFacedTitle: '両面カードが含まれています。',
+      doubleFacedDownloadButton: '裏面画像をZIPでダウンロード',
     },
     downloadModal: {
       title: 'ダウンロード方法を選択',
@@ -28,7 +29,6 @@ export default defineI18nLocale(async () => {
         label: 'Hidden Face 画像（任意）',
         uploadLabel: 'クリックまたはドラッグして画像を選択',
         uploadDescription: 'この画像はすべてのカードの Hidden Face 画像（相手の手札にある場合などに表示される画像）として使用されます。',
-        selected: '選択済み: {fileName}',
       },
       zipCard: {
         title: 'ZIPファイル',

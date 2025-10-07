@@ -11,6 +11,7 @@ export default defineI18nLocale(async () => {
       success: 'Caricamento completato: {count}',
       errorTitle: 'Impossibile scaricare i seguenti file.',
       doubleFacedTitle: 'Sono presenti carte bifronte.',
+      doubleFacedDownloadButton: 'Scarica i retro in ZIP',
     },
     downloadModal: {
       title: 'Seleziona un\'opzione di download',
@@ -28,7 +29,6 @@ export default defineI18nLocale(async () => {
         label: 'Immagine nascosta (facoltativa)',
         uploadLabel: 'Fai clic o trascina per scegliere un\'immagine',
         uploadDescription: 'Questa immagine verrà usata come faccia nascosta per tutte le carte.',
-        selected: 'Selezionato: {fileName}',
       },
       zipCard: {
         title: 'Archivio ZIP',
