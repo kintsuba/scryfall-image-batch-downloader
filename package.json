@@ -10,7 +10,7 @@
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "@iconify-json/material-symbols": "^1.2.40",
+    "@iconify-json/material-symbols": "^1.2.42",
     "@iconify-json/mdi": "^1.2.3",
     "@nuxt/eslint": "1.9.0",
     "@nuxt/ui": "^4.0.1",
