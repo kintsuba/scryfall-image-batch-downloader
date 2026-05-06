@@ -18,7 +18,6 @@
         <CardSuggestion
           v-if="selectedCard"
           :using-lang-ref="usingLangRef"
-          @select-card="selectCard"
         />
         <!-- Modal footer -->
         <div
@@ -61,7 +60,7 @@ import type { SupportedLanguageCode } from '~/constants/languages'
 
 const CardSuggestion = resolveComponent('modal/CardSuggestion')
 
-const { selectedCard, selectCard, updateCardsWithSelectedCard } = useCards()
+const { selectedCard, updateCardsWithSelectedCard } = useCards()
 const { selectedLanguage } = useLanguage()
 const { t } = useI18n()
 

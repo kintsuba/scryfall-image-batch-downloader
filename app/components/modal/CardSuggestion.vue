@@ -22,7 +22,6 @@
 </template>
 
 <script setup lang="ts">
-import type * as Scry from 'scryfall-sdk'
 import type { SupportedLanguageCode } from '~/constants/languages'
 
 const CardList = resolveComponent('modal/CardList')
@@ -38,11 +37,7 @@ const { status: statusEn, data: searchedCardsEn } = await useLazyFetch(
   `/api/cards/search/prints?id=${selectedCard.value?.oracle_id}&lang=en`,
 )
 
-const props = defineProps<{
+defineProps<{
   usingLangRef: SupportedLanguageCode
-}>()
-
-const emit = defineEmits<{
-  (e: 'selectCard', card: Scry.Card): void
 }>()
 </script>

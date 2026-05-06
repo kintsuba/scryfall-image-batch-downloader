@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import type * as Scry from 'scryfall-sdk'
 
-const props = defineProps<{
+defineProps<{
   cards: Scry.Card[]
   selectedCard: Scry.Card | undefined
 }>()

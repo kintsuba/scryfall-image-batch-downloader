@@ -21,7 +21,7 @@ const ScryLoading = resolveComponent('ScryLoading')
 
 const isLoadingRef = ref<boolean>(true)
 
-const props = defineProps<{
+defineProps<{
   card: Readonly<Scry.Card>
 }>()
 

@@ -90,7 +90,7 @@ import type * as Scry from 'scryfall-sdk'
 const { cards, cardNames } = useCards()
 const { t } = useI18n()
 
-const props = defineProps<{
+defineProps<{
   isLoading: boolean
   errorCardNames: string[]
 }>()

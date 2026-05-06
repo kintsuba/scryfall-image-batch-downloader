@@ -4,7 +4,6 @@ import type * as Scry from 'scryfall-sdk'
 export const addCard = (cards: Ref<Scry.Card[]>) => (card: Scry.Card) => {
   cards.value.push(card)
 }
-export const updateCard = (cards: Ref<Scry.Card[]>) => (card: Scry.Card) => {}
 export const updateCardsWithSelectedCard = (cards: Ref<Scry.Card[]>, selectedCard: Ref<Scry.Card | undefined>) => () => {
   const index = cards.value.findIndex((c) => {
     return c.oracle_id === selectedCard.value?.oracle_id
@@ -37,7 +36,6 @@ export const useCards = () => {
   return {
     cards: readonly(cards),
     addCard: addCard(cards),
-    updateCard: updateCard(cards),
     updateCardsWithSelectedCard: updateCardsWithSelectedCard(cards, selectedCard),
     updateCards: updateCards(cards),
     cardNames: readonly(cardNames),
