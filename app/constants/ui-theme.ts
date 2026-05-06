@@ -39,7 +39,6 @@ export const appTheme = {
     root: 'rounded-2xl border border-default shadow-sm',
     title: 'text-sm font-semibold tracking-tight',
     description: 'text-sm/6',
-    actions: 'mt-3',
   },
   fileUpload: {
     base: 'rounded-2xl border-dashed shadow-inner',
