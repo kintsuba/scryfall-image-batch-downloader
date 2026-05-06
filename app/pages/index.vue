@@ -1,7 +1,7 @@
 <template>
-  <main class="h-full">
+  <main class="flex min-h-[calc(100dvh-var(--ui-header-height))] items-center justify-center px-4 py-8">
     <section
-      class="flex flex-col md:flex-row h-full items-center justify-center mt-[-48px] gap-12"
+      class="flex w-full max-w-4xl flex-col items-center justify-center gap-12 md:flex-row"
     >
       <div class="flex w-full max-w-xs items-center justify-center gap-8">
         <UFormField

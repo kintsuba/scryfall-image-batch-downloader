@@ -4,9 +4,9 @@
     :title="selectedCard?.name"
   >
     <template #body>
-      <div class="relative bg-white rounded-lg shadow dark:bg-neutral-700">
+      <div class="relative overflow-hidden rounded-2xl bg-default ring ring-default">
         <div
-          class="flex justify-center border-b border-neutral-200 dark:border-neutral-600"
+          class="flex justify-center border-b border-default bg-elevated/30"
         >
           <img
             v-if="selectedCard"
@@ -22,7 +22,7 @@
         />
         <!-- Modal footer -->
         <div
-          class="flex flex-col md:flex-row md:justify-between items-center gap-3 p-6 space-x-2 rounded-b border-t border-neutral-200 dark:border-neutral-600"
+          class="flex flex-col items-center gap-3 border-t border-default p-6 md:flex-row md:justify-between"
         >
           <UButton
             v-if="selectedLanguage !== 'en'"

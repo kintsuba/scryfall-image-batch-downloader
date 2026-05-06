@@ -1,14 +1,19 @@
 <template>
   <UApp :locale="locales[locale]">
-    <div class="h-screen">
-      <SibdHeader />
-      <NuxtPage />
-    </div>
+    <UTheme :ui="appTheme">
+      <div class="flex min-h-screen flex-col bg-default">
+        <SibdHeader />
+        <div class="flex flex-1 flex-col">
+          <NuxtPage />
+        </div>
+      </div>
+    </UTheme>
   </UApp>
 </template>
 
 <script setup lang="ts">
 import * as locales from '@nuxt/ui/locale'
+import { appTheme } from '~/constants/ui-theme'
 
 const { locale, t } = useI18n()
 

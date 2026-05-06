@@ -9,16 +9,16 @@
         @update:model-value="setLocale($event as typeof locale)"
       />
       <UColorModeSwitch />
-      <nuxt-link
+      <UButton
+        aria-label="Open GitHub repository"
+        color="neutral"
+        variant="ghost"
+        square
         to="https://github.com/kintsuba/scryfall-image-batch-downloader"
-        class="p-2 flex items-center hover:bg-primary-600"
         target="_blank"
       >
-        <UIcon
-          name="i-mdi-github"
-          class="text-2xl"
-        />
-      </nuxt-link>
+        <UIcon name="i-mdi-github" class="text-2xl" />
+      </UButton>
     </template>
   </UHeader>
 </template>
