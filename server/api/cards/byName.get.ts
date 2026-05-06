@@ -1,8 +1,8 @@
-import * as Scry from 'scryfall-sdk'
 import {
   DEFAULT_LANGUAGE_CODE,
   isSupportedLanguageCode,
 } from '~/constants/languages'
+import { scryfallByName, scryfallBySet, scryfallSearch } from '../../utils/scryfall'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -14,15 +14,14 @@ export default defineEventHandler(async (event) => {
     ? normalizedLanguage
     : DEFAULT_LANGUAGE_CODE
 
-  Scry.setAgent('Scryfall Image Batch Downloader', '1.0.0')
-  const card = await Scry.Cards.byName(decodeURI(name), true)
+  const card = await scryfallByName(decodeURI(name), true)
 
   if (requestedLanguage === 'en') {
     return card
   }
 
   try {
-    const localizedCard = await Scry.Cards.bySet(
+    const localizedCard = await scryfallBySet(
       card.set,
       parseInt(card.collector_number),
       requestedLanguage,
@@ -31,15 +30,13 @@ export default defineEventHandler(async (event) => {
   }
   catch {
     try {
-      const localizedCards = await Scry.Cards.search(
+      const localizedCards = await scryfallSearch(
         `oracleid:${card.oracle_id} lang:${requestedLanguage}`,
         {
           order: 'released',
           unique: 'prints',
         },
       )
-        .cancelAfterPage()
-        .waitForAll()
 
       const [firstLocalizedCard] = localizedCards
       if (firstLocalizedCard) {

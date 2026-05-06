@@ -1,9 +1,10 @@
-import * as Scry from 'scryfall-sdk'
+import type * as Scry from 'scryfall-sdk'
 import {
   DEFAULT_LANGUAGE_CODE,
   isSupportedLanguageCode,
 } from '~/constants/languages'
 import type { SupportedLanguageCode } from '~/constants/languages'
+import { scryfallByName, scryfallBySet } from '../../utils/scryfall'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
@@ -18,13 +19,11 @@ export default defineEventHandler(async (event) => {
   const localizedCards: Scry.Card[] = []
   const errorCardNames: string[] = []
 
-  Scry.setAgent('Scryfall Image Batch Downloader', '1.0.0')
-
   for (const name of cardNames) {
     console.log(`Fetching: ${name}`)
 
     try {
-      const card = await Scry.Cards.byName(name)
+      const card = await scryfallByName(name)
       if (!card.image_uris) throw new Error()
       cards.push(card)
       console.log(`Fetched: ${name}`)
@@ -44,7 +43,7 @@ export default defineEventHandler(async (event) => {
     }
 
     try {
-      const localizedCard = await Scry.Cards.bySet(
+      const localizedCard = await scryfallBySet(
         card.set,
         parseInt(card.collector_number),
         requestedLanguage,
