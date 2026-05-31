@@ -6,6 +6,14 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   compatibilityDate: '2025-09-25',
 
+  nitro: {
+    vercel: {
+      functions: {
+        maxDuration: 60,
+      },
+    },
+  },
+
   eslint: {
     config: {
       stylistic: true, // <---

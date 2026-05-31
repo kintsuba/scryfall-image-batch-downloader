@@ -274,7 +274,7 @@ const downloadTtsImages = async () => {
   const blob = await $fetch<Blob>('/api/downloadTtsImages', {
     method: 'POST',
     body: payload,
-    timeout: 600000,
+    timeout: 60000,
     responseType: 'blob',
   })
 

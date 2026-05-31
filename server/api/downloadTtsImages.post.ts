@@ -90,7 +90,7 @@ export default defineEventHandler(async (event) => {
         json: requestPayload,
         responseType: 'buffer',
         timeout: {
-          request: 600000,
+          request: 60000,
         },
       })
       const contentType = response.headers['content-type'] ?? 'image/png'

@@ -17,7 +17,10 @@
         to="https://github.com/kintsuba/scryfall-image-batch-downloader"
         target="_blank"
       >
-        <UIcon name="i-mdi-github" class="text-2xl" />
+        <UIcon
+          name="i-mdi-github"
+          class="text-2xl"
+        />
       </UButton>
     </template>
   </UHeader>
