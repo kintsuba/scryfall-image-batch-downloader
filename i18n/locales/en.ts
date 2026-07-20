@@ -1,58 +1,56 @@
-export default defineI18nLocale(async () => {
-  return {
-    app: {
-      description: 'Download Scryfall card images in batches.',
+export default {
+  app: {
+    description: 'Download Scryfall card images in batches.',
+  },
+  common: {
+    loading: 'Loading...',
+  },
+  alerts: {
+    loading: 'Now Loading: {current} / {total}',
+    success: 'Loading Complete: {count}',
+    errorTitle: 'The following file(s) could not be downloaded.',
+    doubleFacedTitle: 'Double-Faced Card(s) exist.',
+    doubleFacedDownloadButton: 'Download card backs as ZIP',
+  },
+  downloadModal: {
+    title: 'Select a download option',
+    fileNameField: {
+      label: 'File name (optional)',
+      description: 'Specify the download file name.',
+      placeholder: 'e.g. my-deck',
     },
-    common: {
-      loading: 'Loading...',
+    ttsCard: {
+      title: 'TTS Images',
+      description: 'Download image sheets for Tabletop Simulator.',
+      button: 'Download as TTS image sheets',
     },
-    alerts: {
-      loading: 'Now Loading: {current} / {total}',
-      success: 'Loading Complete: {count}',
-      errorTitle: 'The following file(s) could not be downloaded.',
-      doubleFacedTitle: 'Double-Faced Card(s) exist.',
-      doubleFacedDownloadButton: 'Download card backs as ZIP',
+    hiddenImageField: {
+      label: 'Hidden Image (optional)',
+      uploadLabel: 'Click or drag to choose an image',
+      uploadDescription: 'This image will be used as the "hidden" card face for all cards.',
     },
-    downloadModal: {
-      title: 'Select a download option',
-      fileNameField: {
-        label: 'File name (optional)',
-        description: 'Specify the download file name.',
-        placeholder: 'e.g. my-deck',
-      },
-      ttsCard: {
-        title: 'TTS Images',
-        description: 'Download image sheets for Tabletop Simulator.',
-        button: 'Download as TTS image sheets',
-      },
-      hiddenImageField: {
-        label: 'Hidden Image (optional)',
-        uploadLabel: 'Click or drag to choose an image',
-        uploadDescription: 'This image will be used as the "hidden" card face for all cards.',
-      },
-      zipCard: {
-        title: 'ZIP Archive',
-        description: 'Download selected card images bundled together.',
-        button: 'Download as ZIP archive',
-      },
-      progressTitle: 'Downloading your files…',
-      progressDescription: 'Large archives may take a few minutes to prepare.',
+    zipCard: {
+      title: 'ZIP Archive',
+      description: 'Download selected card images bundled together.',
+      button: 'Download as ZIP archive',
     },
-    index: {
-      cardsPlaceholder: '1 Kenrith, the Returned King\n1 Archivist of Oghma\n1 Avacyn\'s Pilgrim\n1 Biomancer\'s Familiar\n...',
-      cardsInitialValue: '1 Kenrith, the Returned King\n1 Archivist of Oghma',
-      searchButton: 'Search',
-      deckList: 'Decklist',
-      selectCardLanguage: 'Select Card Language',
-      deckListInvalidError: 'Decklist contains invalid string(s).',
-      deckListEmptyError: 'Decklist is empty.',
-    },
-    select: {
-      downloadButton: 'Download',
-    },
-    modal: {
-      cancel: 'Cancel',
-      changeImage: 'Change Image',
-    },
-  }
-})
+    progressTitle: 'Downloading your files…',
+    progressDescription: 'Large archives may take a few minutes to prepare.',
+  },
+  index: {
+    cardsPlaceholder: '1 Kenrith, the Returned King\n1 Archivist of Oghma\n1 Avacyn\'s Pilgrim\n1 Biomancer\'s Familiar\n...',
+    cardsInitialValue: '1 Kenrith, the Returned King\n1 Archivist of Oghma',
+    searchButton: 'Search',
+    deckList: 'Decklist',
+    selectCardLanguage: 'Select Card Language',
+    deckListInvalidError: 'Decklist contains invalid string(s).',
+    deckListEmptyError: 'Decklist is empty.',
+  },
+  select: {
+    downloadButton: 'Download',
+  },
+  modal: {
+    cancel: 'Cancel',
+    changeImage: 'Change Image',
+  },
+}
