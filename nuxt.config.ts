@@ -4,6 +4,13 @@ export default defineNuxtConfig({
   modules: ['@nuxt/ui', '@nuxtjs/i18n', '@nuxt/eslint'],
 
   css: ['~/assets/css/main.css'],
+
+  // The client bundle is required for Nuxt UI styles and interactions.
+  // Keep this explicit so production deployments cannot fall back to a
+  // scripts-disabled build.
+  features: {
+    noScripts: false,
+  },
   compatibilityDate: '2025-09-25',
 
   nitro: {
