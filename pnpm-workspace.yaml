@@ -1,3 +1,7 @@
+overrides:
+  loader-utils: ^2.0.4
+  json5: ^2.2.2
+
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
   - vue-demi
