@@ -17,7 +17,7 @@
     "@nuxt/ui": "^4.10.0",
     "@types/got": "^9.6.12",
     "@windicss/plugin-animations": "^1.0.9",
-    "eslint": "^10.7.0",
+    "eslint": "^10.8.0",
     "got": "^15.1.0",
     "nuxt": "^4.5.0",
     "scryfall-sdk": "^5.0.3",
