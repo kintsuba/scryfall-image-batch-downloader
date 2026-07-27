@@ -10,7 +10,7 @@
     "lint:fix": "eslint . --fix"
   },
   "devDependencies": {
-    "@iconify-json/lucide": "^1.2.118",
+    "@iconify-json/lucide": "^1.2.120",
     "@iconify-json/material-symbols": "^1.2.86",
     "@iconify-json/mdi": "^1.2.3",
     "@nuxt/eslint": "1.16.0",
