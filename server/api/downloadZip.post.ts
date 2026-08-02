@@ -1,11 +1,10 @@
-import { createError, setHeader } from 'h3'
+import { setHeader } from 'h3'
 import got from 'got'
 import JSZip from 'jszip'
-
-interface DownloadFileDescriptor {
-  url: string
-  fileName?: string
-}
+import {
+  downloadZipBodySchema,
+  validateWith,
+} from '../utils/validation'
 
 const sanitizeFileName = (name: string, index: number) => {
   const fallback = `card-${index + 1}.png`
@@ -28,15 +27,10 @@ const sanitizeFileName = (name: string, index: number) => {
 }
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
-  const files = (body.files ?? []) as DownloadFileDescriptor[]
-
-  if (!Array.isArray(files) || files.length === 0) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Request must include files.',
-    })
-  }
+  const { files } = await readValidatedBody(
+    event,
+    validateWith(downloadZipBodySchema),
+  )
 
   const zip = new JSZip()
 

@@ -1,5 +1,9 @@
 import got from 'got'
 import JSZip from 'jszip'
+import {
+  downloadTtsImagesBodySchema,
+  validateWith,
+} from '../utils/validation'
 
 const MERGE_ENDPOINT = 'https://tts-deck-server-production.up.railway.app/merge'
 const STACK_SIZE = 69
@@ -23,58 +27,25 @@ const chunkArray = <T>(items: T[], chunkSize: number): T[][] => {
   return chunks
 }
 
-type IncomingImage = { id?: unknown, imageUri?: unknown }
-type DownloadImageRequest = {
-  images?: Array<IncomingImage | null | undefined>
-  urls?: Array<unknown>
-  hiddenImage?: unknown
-}
-
 export default defineEventHandler(async (event) => {
-  const body = await readBody<DownloadImageRequest | undefined>(event) ?? {}
-  let images: Array<{ id?: string, imageUri: string }> = []
-  let hiddenImage: string | undefined
-
-  if (Array.isArray(body.images)) {
-    images = body.images
-      .filter((entry): entry is IncomingImage => typeof entry === 'object' && entry !== null)
-      .filter(entry => typeof entry.imageUri === 'string' && entry.imageUri.length > 0)
-      .map(entry => ({
-        id: typeof entry.id === 'string' ? entry.id : undefined,
-        imageUri: entry.imageUri as string,
-      }))
-  }
-
-  if (!images.length && Array.isArray(body.urls)) {
-    images = body.urls
-      .filter((url): url is string => typeof url === 'string' && url.length > 0)
-      .map((url, index) => ({ id: `image-${index}`, imageUri: url }))
-  }
-
-  if (!images.length) {
-    throw createError({ statusCode: 400, statusMessage: 'No images provided' })
-  }
-
-  if (typeof body.hiddenImage === 'string') {
-    const trimmed = body.hiddenImage.trim()
-    if (trimmed.length > 0) {
-      hiddenImage = trimmed
-    }
-  }
+  const body = await readValidatedBody(
+    event,
+    validateWith(downloadTtsImagesBodySchema),
+  )
+  const images = body.images ?? body.urls?.map((url, index) => ({
+    id: `image-${index}`,
+    imageUri: url,
+  })) ?? []
+  const { hiddenImage } = body
 
   if (hiddenImage) {
     console.info('[downloadTtsImages] hiddenImage payload (base64):', hiddenImage)
   }
 
-  const payload = images.map((entry: { id?: string, imageUri: string }, index: number): MergePayloadItem => {
-    const id = typeof entry.id === 'string' ? entry.id.trim() : ''
-    const imageUri = entry.imageUri.trim()
-
-    return {
-      id: id.length ? id : `image-${index}`,
-      imageUri,
-    }
-  })
+  const payload = images.map((entry, index): MergePayloadItem => ({
+    id: entry.id ?? `image-${index}`,
+    imageUri: entry.imageUri,
+  }))
 
   const chunks = chunkArray(payload, STACK_SIZE)
 

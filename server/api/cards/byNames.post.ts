@@ -1,19 +1,15 @@
 import type * as Scry from 'scryfall-sdk'
 import {
-  DEFAULT_LANGUAGE_CODE,
-  isSupportedLanguageCode,
-} from '~/constants/languages'
-import type { SupportedLanguageCode } from '~/constants/languages'
+  cardByNamesBodySchema,
+  validateWith,
+} from '../../utils/validation'
 import { scryfallByName, scryfallBySet } from '../../utils/scryfall'
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
-  const cardNames = body.cardNames as string[]
-  const bodyLanguage = (body.language as string | undefined)?.toLowerCase()
-  const requestedLanguage: SupportedLanguageCode
-    = isSupportedLanguageCode(bodyLanguage)
-      ? bodyLanguage
-      : DEFAULT_LANGUAGE_CODE
+  const {
+    cardNames,
+    language: requestedLanguage,
+  } = await readValidatedBody(event, validateWith(cardByNamesBodySchema))
 
   const cards: Scry.Card[] = []
   const localizedCards: Scry.Card[] = []

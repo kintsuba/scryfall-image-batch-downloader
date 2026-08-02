@@ -1,20 +1,16 @@
 import {
-  DEFAULT_LANGUAGE_CODE,
-  isSupportedLanguageCode,
-} from '~/constants/languages'
+  cardByNameQuerySchema,
+  validateWith,
+} from '../../utils/validation'
 import { scryfallByName, scryfallBySet, scryfallSearch } from '../../utils/scryfall'
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  const name = query.name as string
-  const langQuery = query.lang as string | undefined
+  const {
+    name,
+    lang: requestedLanguage,
+  } = await getValidatedQuery(event, validateWith(cardByNameQuerySchema))
 
-  const normalizedLanguage = langQuery?.toLowerCase()
-  const requestedLanguage = isSupportedLanguageCode(normalizedLanguage)
-    ? normalizedLanguage
-    : DEFAULT_LANGUAGE_CODE
-
-  const card = await scryfallByName(decodeURI(name), true)
+  const card = await scryfallByName(name, true)
 
   if (requestedLanguage === 'en') {
     return card
