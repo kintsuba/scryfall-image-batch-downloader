@@ -1,10 +1,10 @@
 import { setHeader } from 'h3'
-import got from 'got'
 import JSZip from 'jszip'
 import {
   downloadZipBodySchema,
   validateWith,
 } from '../utils/validation'
+import { downloadScryfallImage } from '../utils/scryfallImageDownload'
 
 const sanitizeFileName = (name: string, index: number) => {
   const fallback = `card-${index + 1}.png`
@@ -36,8 +36,7 @@ export default defineEventHandler(async (event) => {
 
   await Promise.all(
     files.map(async ({ url, fileName }, index) => {
-      if (!url) return
-      const buffer = await got.get(url).buffer()
+      const buffer = await downloadScryfallImage(url)
       const safeName = sanitizeFileName(fileName ?? '', index)
       zip.file(safeName, buffer)
     }),

@@ -1,5 +1,6 @@
 import { z } from 'zod'
 import { DEFAULT_LANGUAGE_CODE } from '~/constants/languages'
+import { isAllowedScryfallImageUrl } from './scryfallImageUrl'
 
 export const MAX_CARD_NAME_LENGTH = 1024
 export const MAX_CARD_NAMES = 100
@@ -80,6 +81,11 @@ const httpUrlSchema = z
     }
   }, 'URL must use HTTP or HTTPS')
 
+const scryfallImageUrlSchema = httpUrlSchema.refine(
+  isAllowedScryfallImageUrl,
+  'URL must be an HTTPS image URL from cards.scryfall.io',
+)
+
 const fileNameSchema = optionalTrimmedString('fileName', MAX_FILE_NAME_LENGTH)
 
 const hiddenImageSchema = z
@@ -108,12 +114,8 @@ export const cardPrintsQuerySchema = z.object({
   lang: supportedLanguageSchema,
 }).strict()
 
-export const downloadBodySchema = z.object({
-  url: httpUrlSchema,
-}).strict()
-
 const downloadFileSchema = z.object({
-  url: httpUrlSchema,
+  url: scryfallImageUrlSchema,
   fileName: fileNameSchema,
 }).strict()
 

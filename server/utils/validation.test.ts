@@ -3,7 +3,6 @@ import {
   cardByNameQuerySchema,
   cardByNamesBodySchema,
   cardPrintsQuerySchema,
-  downloadBodySchema,
   downloadTtsImagesBodySchema,
   downloadZipBodySchema,
   MAX_CARD_NAMES,
@@ -78,29 +77,12 @@ describe('cardPrintsQuerySchema', () => {
   })
 })
 
-describe('downloadBodySchema', () => {
-  it.each([
-    'https://cards.scryfall.io/normal/front/example.jpg',
-    'http://example.test/image.png',
-  ])('accepts an HTTP(S) URL', (url) => {
-    expect(downloadBodySchema.parse({ url })).toEqual({ url })
-  })
-
-  it.each([
-    'file:///etc/passwd',
-    'data:image/png;base64,aGVsbG8=',
-    'not a URL',
-  ])('rejects a non-HTTP URL', (url) => {
-    expect(downloadBodySchema.safeParse({ url }).success).toBe(false)
-  })
-})
-
 describe('downloadZipBodySchema', () => {
   it('normalizes an optional file name', () => {
     expect(downloadZipBodySchema.parse({
-      files: [{ url: 'https://example.test/card.png', fileName: '  Card  ' }],
+      files: [{ url: 'https://cards.scryfall.io/large/front/card.jpg', fileName: '  Card  ' }],
     })).toEqual({
-      files: [{ url: 'https://example.test/card.png', fileName: 'Card' }],
+      files: [{ url: 'https://cards.scryfall.io/large/front/card.jpg', fileName: 'Card' }],
     })
   })
 
@@ -109,11 +91,23 @@ describe('downloadZipBodySchema', () => {
     { files: [null] },
     {
       files: Array.from({ length: MAX_DOWNLOAD_FILES + 1 }, () => ({
-        url: 'https://example.test/card.png',
+        url: 'https://cards.scryfall.io/large/front/card.jpg',
       })),
     },
   ])('rejects malformed or excessive file lists', (input) => {
     expect(downloadZipBodySchema.safeParse(input).success).toBe(false)
+  })
+
+  it.each([
+    'http://cards.scryfall.io/large/front/card.jpg',
+    'https://example.test/card.png',
+    'https://cards.scryfall.io.evil.test/card.png',
+    'https://cards.scryfall.io:8443/card.png',
+    'https://user:password@cards.scryfall.io/card.png',
+  ])('rejects unsafe outbound image URL %s', (url) => {
+    expect(downloadZipBodySchema.safeParse({
+      files: [{ url }],
+    }).success).toBe(false)
   })
 })
 
