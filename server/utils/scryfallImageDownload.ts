@@ -3,6 +3,11 @@ import { lookup } from 'node:dns/promises'
 import type { LookupFunction } from 'node:net'
 import got from 'got'
 import ipaddr from 'ipaddr.js'
+import {
+  DownloadSizeLimitError,
+  MAX_ZIP_IMAGE_BYTES,
+  readLimitedBufferResponse,
+} from './downloadResources'
 import { parseScryfallImageUrl } from './scryfallImageUrl'
 
 export const SCRYFALL_IMAGE_DOWNLOAD_TIMEOUT = {
@@ -15,7 +20,7 @@ export const SCRYFALL_IMAGE_DOWNLOAD_TIMEOUT = {
 
 type ImageResponse = {
   statusCode: number
-  rawBody: Buffer
+  rawBody: Uint8Array
 }
 
 type ImageRequestOptions = {
@@ -42,8 +47,16 @@ export type ResolveHostname = typeof resolveHostname
 const fetchImage = async (
   url: URL,
   options: ImageRequestOptions,
+  maxBytes: number,
 ): Promise<ImageResponse> => {
-  return await got.get(url, options)
+  return await readLimitedBufferResponse(
+    signal => got.get(url, {
+      ...options,
+      responseType: 'buffer',
+      signal,
+    }),
+    maxBytes,
+  )
 }
 
 export type FetchImage = typeof fetchImage
@@ -101,8 +114,15 @@ export const createSafeDnsLookup = (
 
 export const downloadScryfallImage = async (
   input: string,
-  request: FetchImage = fetchImage,
+  options: {
+    maxBytes?: number
+    request?: FetchImage
+  } = {},
 ) => {
+  const {
+    maxBytes = MAX_ZIP_IMAGE_BYTES,
+    request = fetchImage,
+  } = options
   const url = parseScryfallImageUrl(input)
   const response = await request(url, {
     dnsLookup: createSafeDnsLookup(),
@@ -116,10 +136,14 @@ export const downloadScryfallImage = async (
       limit: 0,
     },
     timeout: SCRYFALL_IMAGE_DOWNLOAD_TIMEOUT,
-  })
+  }, maxBytes)
 
   if (response.statusCode >= 300 && response.statusCode < 400) {
     throw new Error('Redirect responses are not allowed for Scryfall images')
+  }
+
+  if (response.rawBody.length > maxBytes) {
+    throw new DownloadSizeLimitError(maxBytes)
   }
 
   return response.rawBody

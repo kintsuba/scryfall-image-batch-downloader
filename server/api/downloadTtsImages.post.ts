@@ -1,5 +1,14 @@
 import got from 'got'
+import { sendStream } from 'h3'
 import JSZip from 'jszip'
+import {
+  addToSizeBudget,
+  createTimedZipStream,
+  DownloadSizeLimitError,
+  MAX_TTS_MERGED_IMAGE_BYTES,
+  MAX_TTS_MERGED_TOTAL_BYTES,
+  readLimitedBufferResponse,
+} from '../utils/downloadResources'
 import {
   downloadTtsImagesBodySchema,
   validateWith,
@@ -49,7 +58,8 @@ export default defineEventHandler(async (event) => {
 
   const chunks = chunkArray(payload, STACK_SIZE)
 
-  const mergedChunks: Array<{ buffer: Buffer, contentType: string, fileName: string }> = []
+  const mergedChunks: Array<{ buffer: Uint8Array, contentType: string, fileName: string }> = []
+  let totalMergedBytes = 0
 
   for (const [chunkIndex, chunk] of chunks.entries()) {
     try {
@@ -57,14 +67,29 @@ export default defineEventHandler(async (event) => {
       if (hiddenImage) {
         requestPayload.hiddenImage = hiddenImage
       }
-      const response = await got.post(MERGE_ENDPOINT, {
-        json: requestPayload,
-        responseType: 'buffer',
-        timeout: {
-          request: 60000,
-        },
-      })
-      const contentType = response.headers['content-type'] ?? 'image/png'
+      const response = await readLimitedBufferResponse(
+        signal => got.post(MERGE_ENDPOINT, {
+          json: requestPayload,
+          responseType: 'buffer',
+          retry: { limit: 0 },
+          signal,
+          timeout: {
+            connect: 5000,
+            response: 60000,
+            request: 60000,
+          },
+        }),
+        MAX_TTS_MERGED_IMAGE_BYTES,
+      )
+      const responseContentType = response.headers['content-type']
+      const contentType = Array.isArray(responseContentType)
+        ? responseContentType[0] ?? 'image/png'
+        : responseContentType ?? 'image/png'
+      totalMergedBytes = addToSizeBudget(
+        totalMergedBytes,
+        response.rawBody.length,
+        MAX_TTS_MERGED_TOTAL_BYTES,
+      )
 
       mergedChunks.push({
         buffer: response.rawBody,
@@ -73,6 +98,13 @@ export default defineEventHandler(async (event) => {
       })
     }
     catch (error) {
+      if (error instanceof DownloadSizeLimitError) {
+        throw createError({
+          statusCode: 413,
+          statusMessage: 'Merged images exceed the size limit',
+          cause: error,
+        })
+      }
       throw createError({ statusCode: 502, statusMessage: 'Failed to merge images', cause: error })
     }
   }
@@ -93,9 +125,8 @@ export default defineEventHandler(async (event) => {
     zip.file(fileName, buffer)
   }
 
-  const archive = await zip.generateAsync({ type: 'nodebuffer' })
   setHeader(event, 'Content-Type', ZIP_CONTENT_TYPE)
   setHeader(event, 'Content-Disposition', `attachment; filename="${ZIP_FILE_NAME}"`)
 
-  return archive
+  return sendStream(event, createTimedZipStream(zip))
 })
