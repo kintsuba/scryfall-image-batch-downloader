@@ -1,9 +1,14 @@
 import { scryfallSearch } from '../../../utils/scryfall'
+import {
+  cardPrintsQuerySchema,
+  validateWith,
+} from '../../../utils/validation'
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  const id = query.id as string
-  const lang = query.lang as string
+  const { id, lang } = await getValidatedQuery(
+    event,
+    validateWith(cardPrintsQuerySchema),
+  )
 
   const cards = await scryfallSearch(`oracleid:${id} lang:${lang}`, {
     order: 'released',
