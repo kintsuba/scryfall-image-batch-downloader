@@ -96,8 +96,7 @@ const changeLang = () => {
 }
 
 const changeCard = () => {
-  updateCardsWithSelectedCard()
-  unset()
+  if (updateCardsWithSelectedCard()) unset()
 }
 
 const unset = () => {
