@@ -7,6 +7,7 @@ import {
   downloadZipBodySchema,
   MAX_CARD_NAMES,
   MAX_DOWNLOAD_FILES,
+  MAX_HIDDEN_IMAGE_DATA_URL_LENGTH,
   MAX_TTS_IMAGES,
 } from './validation'
 
@@ -128,6 +129,13 @@ describe('downloadTtsImagesBodySchema', () => {
     })).toEqual({
       urls: ['https://example.test/card.png'],
     })
+  })
+
+  it('rejects a Hidden Face image above the size limit', () => {
+    expect(downloadTtsImagesBodySchema.safeParse({
+      images: [{ imageUri: 'https://example.test/card.png' }],
+      hiddenImage: `data:image/png;base64,${'A'.repeat(MAX_HIDDEN_IMAGE_DATA_URL_LENGTH)}`,
+    }).success).toBe(false)
   })
 
   it.each([
