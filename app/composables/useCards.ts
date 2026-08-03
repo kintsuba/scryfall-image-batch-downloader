@@ -4,12 +4,25 @@ import type * as Scry from 'scryfall-sdk'
 export const addCard = (cards: Ref<Scry.Card[]>) => (card: Scry.Card) => {
   cards.value.push(card)
 }
-export const updateCardsWithSelectedCard = (cards: Ref<Scry.Card[]>, selectedCard: Ref<Scry.Card | undefined>) => () => {
-  const index = cards.value.findIndex((c) => {
-    return c.oracle_id === selectedCard.value?.oracle_id
-  })
 
-  if (selectedCard.value) cards.value.splice(index, 1, selectedCard.value)
+export const replaceCardByOracleId = (
+  cards: Scry.Card[],
+  selectedCard: Scry.Card | undefined,
+): Scry.Card[] | undefined => {
+  if (!selectedCard?.oracle_id) return undefined
+
+  const index = cards.findIndex(card => card.oracle_id === selectedCard.oracle_id)
+  if (index === -1) return undefined
+
+  return cards.map((card, cardIndex) => cardIndex === index ? selectedCard : card)
+}
+
+export const updateCardsWithSelectedCard = (cards: Ref<Scry.Card[]>, selectedCard: Ref<Scry.Card | undefined>) => () => {
+  const updatedCards = replaceCardByOracleId(cards.value, selectedCard.value)
+  if (!updatedCards) return false
+
+  cards.value = updatedCards
+  return true
 }
 export const updateCards = (cards: Ref<Scry.Card[]>) => (value: Scry.Card[]) => {
   cards.value = [...value]
