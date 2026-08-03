@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
   try {
     const localizedCard = await scryfallBySet(
       card.set,
-      parseInt(card.collector_number),
+      card.collector_number,
       requestedLanguage,
     )
     return localizedCard
