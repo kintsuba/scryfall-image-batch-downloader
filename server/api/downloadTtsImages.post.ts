@@ -47,10 +47,6 @@ export default defineEventHandler(async (event) => {
   })) ?? []
   const { hiddenImage } = body
 
-  if (hiddenImage) {
-    console.info('[downloadTtsImages] hiddenImage payload (base64):', hiddenImage)
-  }
-
   const payload = images.map((entry, index): MergePayloadItem => ({
     id: entry.id ?? `image-${index}`,
     imageUri: entry.imageUri,
@@ -105,7 +101,8 @@ export default defineEventHandler(async (event) => {
           cause: error,
         })
       }
-      throw createError({ statusCode: 502, statusMessage: 'Failed to merge images', cause: error })
+      // Got errors may retain request options, including the Hidden Face payload.
+      throw createError({ statusCode: 502, statusMessage: 'Failed to merge images' })
     }
   }
 
