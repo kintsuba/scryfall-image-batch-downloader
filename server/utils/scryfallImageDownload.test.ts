@@ -3,6 +3,10 @@ import type { LookupFunction } from 'node:net'
 import { Buffer } from 'node:buffer'
 import { describe, expect, it, vi } from 'vitest'
 import {
+  DownloadSizeLimitError,
+  MAX_ZIP_IMAGE_BYTES,
+} from './downloadResources'
+import {
   createSafeDnsLookup,
   downloadScryfallImage,
   isPublicIpAddress,
@@ -106,7 +110,7 @@ describe('downloadScryfallImage', () => {
 
     await expect(downloadScryfallImage(
       'https://cards.scryfall.io/large/front/card.jpg',
-      request,
+      { request },
     )).resolves.toBe(image)
 
     expect(request).toHaveBeenCalledWith(
@@ -118,6 +122,7 @@ describe('downloadScryfallImage', () => {
         retry: { limit: 0 },
         timeout: SCRYFALL_IMAGE_DOWNLOAD_TIMEOUT,
       }),
+      MAX_ZIP_IMAGE_BYTES,
     )
   })
 
@@ -129,8 +134,20 @@ describe('downloadScryfallImage', () => {
 
     await expect(downloadScryfallImage(
       'https://cards.scryfall.io/large/front/card.jpg',
-      request,
+      { request },
     )).rejects.toThrow('Redirect responses are not allowed')
+  })
+
+  it('rejects images above the configured byte limit', async () => {
+    const request = vi.fn(async () => ({
+      statusCode: 200,
+      rawBody: Buffer.alloc(11),
+    }))
+
+    await expect(downloadScryfallImage(
+      'https://cards.scryfall.io/large/front/card.jpg',
+      { maxBytes: 10, request },
+    )).rejects.toBeInstanceOf(DownloadSizeLimitError)
   })
 
   it('revalidates the URL before making a request', async () => {
@@ -138,7 +155,7 @@ describe('downloadScryfallImage', () => {
 
     await expect(downloadScryfallImage(
       'https://example.test/card.jpg',
-      request,
+      { request },
     )).rejects.toThrow('host is not allowed')
     expect(request).not.toHaveBeenCalled()
   })
