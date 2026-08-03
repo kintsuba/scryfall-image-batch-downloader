@@ -64,7 +64,7 @@ export const scryfallByName = (name: string, exact?: boolean) => {
 
 export const scryfallBySet = (
   set: string,
-  collectorNumber: number,
+  collectorNumber: string,
   language?: string,
 ) => {
   return withScryfallRateLimit(() =>
