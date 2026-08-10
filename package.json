@@ -14,7 +14,7 @@
     "@iconify-json/lucide": "^1.2.121",
     "@iconify-json/material-symbols": "^1.2.88",
     "@iconify-json/mdi": "^1.2.3",
-    "@nuxt/eslint": "1.16.0",
+    "@nuxt/eslint": "1.17.0",
     "@nuxt/ui": "^4.10.0",
     "@types/got": "^9.6.12",
     "@windicss/plugin-animations": "^1.0.9",
