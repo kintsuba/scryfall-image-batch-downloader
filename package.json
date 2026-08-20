@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@iconify-json/lucide": "^1.2.121",
-    "@iconify-json/material-symbols": "^1.2.88",
+    "@iconify-json/material-symbols": "^1.2.89",
     "@iconify-json/mdi": "^1.2.3",
     "@nuxt/eslint": "1.16.0",
     "@nuxt/ui": "^4.10.0",
